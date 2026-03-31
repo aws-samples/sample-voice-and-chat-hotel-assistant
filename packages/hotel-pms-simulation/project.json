@@ -104,7 +104,7 @@
     "prepare-deployment-spec": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "python scripts/prepare_deployment_spec.py",
+        "command": "uv run python scripts/prepare_deployment_spec.py",
         "cwd": "packages/hotel-pms-simulation"
       },
       "inputs": ["{projectRoot}/openapi.source.yaml"],
