@@ -1,0 +1,11 @@
+.venv/
+dist/
+docs/
+**/tests/
+**/.pytest_cache/
+**/__pycache__/
+**/.ruff_cache/
+**/project.json
+.env
+tasks.md
+design.md

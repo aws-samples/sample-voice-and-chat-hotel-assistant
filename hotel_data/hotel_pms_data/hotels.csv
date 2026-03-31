@@ -1,0 +1,5 @@
+hotel_id,name,location,timezone,created_at
+H-GPR-001,Grand Paraíso Resort & Spa,Riviera Maya,America/Mexico_City,2025-01-01 00:00:00
+H-PVR-002,Paraíso Vallarta Resort & Spa,"Puerto Vallarta, Jalisco",America/Mexico_City,2025-01-01 00:00:00
+H-PTL-003,Paraíso Tulum Eco-Luxury Resort,"Tulum, Quintana Roo",America/Mexico_City,2025-01-01 00:00:00
+H-PLC-004,Paraíso Los Cabos Desert & Ocean Resort,"Los Cabos, Baja California Sur",America/Mexico_City,2025-01-01 00:00:00

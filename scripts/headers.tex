@@ -1,0 +1,12 @@
+% Override default figure placement To be within the flow of the text rather
+% than on it's own page.
+\usepackage{float}
+\makeatletter
+\def\fps@figure{H} 
+\makeatother
+
+
+% Use Amazon Ember for main font and Andale Mono for monospace
+\usepackage{fontspec}
+\setmainfont{Amazon Ember}
+\setmonofont{Andale Mono}[Scale=0.85]

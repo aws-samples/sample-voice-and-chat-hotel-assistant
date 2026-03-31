@@ -1,0 +1,21 @@
+room_type_id,hotel_id,name,description,max_occupancy,total_rooms,base_rate,breakfast_rate,all_inclusive_rate,created_at
+JSVG-GPR,H-GPR-001,Junior Suite Vista Jardín,Vista a jardines tropicales exuberantes,3,150,8500,9200,11500,2025-01-01 00:00:00
+JSVM-GPR,H-GPR-001,Junior Suite Vista Mar,Vista panorámica al Mar Caribe,3,100,10200,11000,13500,2025-01-01 00:00:00
+FAMS-GPR,H-GPR-001,Family Suite (2 Habitaciones),"Dos habitaciones conectadas, perfecta para familias",6,50,16000,17200,21000,2025-01-01 00:00:00
+HNPP-GPR,H-GPR-001,Suite Nupcial con Piscina Privada,"Piscina privada, ideal para luna de miel",3,48,22500,23800,28000,2025-01-01 00:00:00
+PRES-GPR,H-GPR-001,"Suite Presidencial ""Paraíso""",La experiencia de lujo definitiva con servicios exclusivos,8,2,75000,78000,85000,2025-01-01 00:00:00
+JSVG-PVR,H-PVR-002,Junior Suite Vista Jardín,"Vista a jardines tropicales, terraza privada",3,120,7200,7900,10200,2025-01-01 00:00:00
+JSVM-PVR,H-PVR-002,Junior Suite Vista Mar,"Vista panorámica al océano Pacífico, balcón amplio",3,80,9500,10300,12800,2025-01-01 00:00:00
+FAMS-PVR,H-PVR-002,Family Suite,"Dos habitaciones conectadas, ideal para familias",6,40,14500,15800,19500,2025-01-01 00:00:00
+SNJP-PVR,H-PVR-002,Suite Nupcial con Jacuzzi Privado,"Jacuzzi privado en terraza, decoración romántica",3,38,19800,21000,25500,2025-01-01 00:00:00
+PRES-PVR,H-PVR-002,"Suite Presidencial ""Pacífico""","Terraza de 100 m², mayordomo personal, cocina completa",8,2,65000,68000,75000,2025-01-01 00:00:00
+JVIL-PTL,H-PTL-003,Jungle Villa,"Inmersas en la selva, terraza privada con hamaca, ducha al aire libre",3,30,12500,13500,16800,2025-01-01 00:00:00
+BVIL-PTL,H-PTL-003,Beachfront Villa,"Acceso directo a playa, terraza frente al mar, arquitectura maya contemporánea",3,25,16800,18000,22000,2025-01-01 00:00:00
+CENO-PTL,H-PTL-003,Cenote Suite,"Vista a cenote privado, piscina natural, diseño biofílico",4,15,22000,23500,28000,2025-01-01 00:00:00
+TREE-PTL,H-PTL-003,Treetop Villa,"Elevadas entre los árboles, observación de aves, máxima privacidad",3,12,28500,30000,35000,2025-01-01 00:00:00
+MAST-PTL,H-PTL-003,"Master Villa ""Itzamná""","Villa familiar, cenote privado, mayordomo personal, cocina gourmet",6,3,45000,47000,52000,2025-01-01 00:00:00
+DVJS-PLC,H-PLC-004,Desert View Junior Suite,"Vista panorámica al desierto, terraza privada, chimenea, diseño contemporáneo mexicano",3,100,15500,16800,20500,2025-01-01 00:00:00
+OVSW-PLC,H-PLC-004,Ocean View Suite,"Vista al Mar de Cortés, balcón amplio, jacuzzi privado, sala de estar separada",3,80,19800,21000,25000,2025-01-01 00:00:00
+DOMS-PLC,H-PLC-004,Desert & Ocean Master Suite,"Vista dual desierto-océano, terraza de 40 m², bar privado, comedor formal",4,40,28500,30000,35000,2025-01-01 00:00:00
+PPVL-PLC,H-PLC-004,Private Pool Villa,"Piscina infinity privada, jardín del desierto, cocina gourmet, mayordomo personal",6,35,45000,47000,52000,2025-01-01 00:00:00
+PRES-PLC,H-PLC-004,"Presidential Villa ""Baja""","Piscina de 15m, spa privado, helipuerto, chef personal, equipo de servicio dedicado",10,5,95000,98000,110000,2025-01-01 00:00:00

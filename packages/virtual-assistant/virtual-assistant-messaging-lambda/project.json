@@ -1,0 +1,85 @@
+{
+  "name": "virtual-assistant-messaging-lambda",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "packages/virtual-assistant/virtual-assistant-messaging-lambda/virtual_assistant_messaging_lambda",
+  "targets": {
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run pytest",
+        "cwd": "packages/virtual-assistant/virtual-assistant-messaging-lambda"
+      },
+      "configurations": {
+        "coverage": {
+          "command": "uv run pytest --cov=virtual_assistant_messaging_lambda --cov-report=term-missing --cov-report=html"
+        },
+        "integration": {
+          "command": "uv run pytest -m integration"
+        },
+        "unit": {
+          "command": "uv run pytest -m 'not integration'"
+        }
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run ruff check .",
+        "cwd": "packages/virtual-assistant/virtual-assistant-messaging-lambda"
+      },
+      "configurations": {
+        "fix": {
+          "command": "uv run ruff check --fix ."
+        }
+      }
+    },
+    "format": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run ruff format .",
+        "cwd": "packages/virtual-assistant/virtual-assistant-messaging-lambda"
+      }
+    },
+    "install": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv sync",
+        "cwd": "packages/virtual-assistant/virtual-assistant-messaging-lambda"
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv build",
+        "cwd": "packages/virtual-assistant/virtual-assistant-messaging-lambda"
+      },
+      "outputs": ["{projectRoot}/dist"]
+    },
+    "package": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "echo 'Building message-buffering Lambda package...'",
+          "rm -rf dist/lambda/message-buffering",
+          "mkdir -p dist/lambda/message-buffering/lambda_package",
+          "uv pip install --no-installer-metadata --compile-bytecode --target dist/lambda/message-buffering/lambda_package --python-platform aarch64-manylinux2014 --python-version 3.14 .",
+          "uv pip install --no-installer-metadata --compile-bytecode --target dist/lambda/message-buffering/lambda_package --python-platform aarch64-manylinux2014 --python-version 3.14 --no-deps ../virtual-assistant-common",
+          "cd dist/lambda/message-buffering/lambda_package && zip -r ../lambda.zip .",
+          "rm -rf dist/lambda/message-buffering/lambda_package",
+          "echo 'message-buffering Lambda package built successfully'"
+        ],
+        "parallel": false,
+        "cwd": "packages/virtual-assistant/virtual-assistant-messaging-lambda"
+      },
+      "dependsOn": [],
+      "inputs": [
+        "{projectRoot}/pyproject.toml",
+        "{projectRoot}/virtual_assistant_messaging_lambda/**/*",
+        "{workspaceRoot}/packages/virtual-assistant/virtual-assistant-common/**/*"
+      ],
+      "outputs": ["{projectRoot}/dist/lambda/message-buffering/lambda.zip"]
+    }
+  },
+  "tags": ["python", "lambda", "messaging", "agentcore"]
+}

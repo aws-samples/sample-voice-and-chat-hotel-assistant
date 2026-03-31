@@ -1,0 +1,130 @@
+{
+  "Comment": "Message batching workflow with processing flag for retry safety",
+  "QueryLanguage": "JSONata",
+  "StartAt": "SetWaitingState",
+  "States": {
+    "SetWaitingState": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::dynamodb:updateItem",
+      "Arguments": {
+        "TableName": "message-buffer",
+        "Key": {
+          "user_id": { "S": "{% $states.input.user_id %}" }
+        },
+        "UpdateExpression": "SET waiting_state = :true",
+        "ExpressionAttributeValues": {
+          ":true": { "BOOL": true }
+        }
+      },
+      "Output": "{% $states.input %}",
+      "Next": "WaitForMessages"
+    },
+    "WaitForMessages": {
+      "Type": "Wait",
+      "Seconds": 2,
+      "Next": "GetMessages"
+    },
+    "GetMessages": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::dynamodb:getItem",
+      "Arguments": {
+        "TableName": "message-buffer",
+        "Key": {
+          "user_id": { "S": "{% $states.input.user_id %}" }
+        }
+      },
+      "Output": "{% { 'user_id': $states.input.user_id, 'buffer_data': $states.result } %}",
+      "Next": "CheckMessageAge"
+    },
+    "CheckMessageAge": {
+      "Type": "Pass",
+      "Comment": "Use JSONata to check age of latest non-processing message",
+      "Output": "{% ( $nonProcessing := $states.input.buffer_data.Item.messages.L[M.processing.BOOL = false]; { 'user_id': $states.input.user_id, 'messages': $states.input.buffer_data.Item.messages.L, 'session_id': $states.input.buffer_data.Item.session_id.S, 'should_wait': $count($nonProcessing) > 0 and ($millis($states.context.State.EnteredTime) - ($max($nonProcessing.M.timestamp.N) * 1000) < 2000) } ) %}",
+      "Next": "DecideNextAction"
+    },
+    "DecideNextAction": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Condition": "{% $states.input.should_wait %}",
+          "Next": "WaitForMessages"
+        }
+      ],
+      "Default": "ClearWaitingState"
+    },
+    "ClearWaitingState": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::dynamodb:updateItem",
+      "Arguments": {
+        "TableName": "message-buffer",
+        "Key": {
+          "user_id": { "S": "{% $states.input.user_id %}" }
+        },
+        "UpdateExpression": "SET waiting_state = :false",
+        "ExpressionAttributeValues": {
+          ":false": { "BOOL": false }
+        }
+      },
+      "Output": "{% $states.input %}",
+      "Next": "MarkMessagesAsProcessing"
+    },
+    "MarkMessagesAsProcessing": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:REGION:ACCOUNT:function:mark-processing",
+      "Comment": "Mark all non-processing messages as processing=true",
+      "Arguments": {
+        "user_id": "{% $states.input.user_id %}",
+        "messages": "{% $states.input.messages %}",
+        "session_id": "{% $states.input.session_id %}"
+      },
+      "Output": "{% { 'user_id': $states.input.user_id, 'session_id': $states.input.session_id, 'marked_messages': $states.result } %}",
+      "Next": "PrepareAgentCoreInvocation"
+    },
+    "PrepareAgentCoreInvocation": {
+      "Type": "Pass",
+      "Comment": "Use JSONata to combine content and extract IDs from processing messages",
+      "Output": "{% { 'user_id': $states.input.user_id, 'session_id': $states.input.session_id, 'combined_content': $join($states.input.marked_messages.processing_messages.content, '\n'), 'message_ids': $states.input.marked_messages.processing_messages.message_id } %}",
+      "Next": "InvokeAgentCore"
+    },
+    "InvokeAgentCore": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:REGION:ACCOUNT:function:invoke-agentcore",
+      "Retry": [
+        {
+          "ErrorEquals": ["AgentCoreSessionBusyError"],
+          "IntervalSeconds": 15,
+          "MaxAttempts": 3,
+          "BackoffRate": 2.0
+        }
+      ],
+      "Output": "{% { 'user_id': $states.input.user_id, 'invocation_result': $states.result } %}",
+      "Next": "DeleteProcessedMessages",
+      "Catch": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "Output": "{% { 'user_id': $states.input.user_id, 'error': $states.errorOutput } %}",
+          "Next": "HandleFailure"
+        }
+      ]
+    },
+    "DeleteProcessedMessages": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:REGION:ACCOUNT:function:delete-processed",
+      "Comment": "Delete messages where processing=true after successful invocation",
+      "Arguments": {
+        "user_id": "{% $states.input.user_id %}"
+      },
+      "End": true
+    },
+    "HandleFailure": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:REGION:ACCOUNT:function:handle-failure",
+      "Comment": "Mark all processing messages as failed, leave in buffer for manual cleanup",
+      "Arguments": {
+        "user_id": "{% $states.input.user_id %}",
+        "error": "{% $states.input.error %}"
+      },
+      "End": true
+    }
+  }
+}

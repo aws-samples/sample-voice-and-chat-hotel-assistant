@@ -1,0 +1,83 @@
+[project]
+name = "chatbot-messaging-backend"
+version = "1.0.0"
+description = "Chatbot messaging backend that simulates messaging platform integrations"
+requires-python = ">=3.13,<4"
+readme = "README.md"
+dependencies = [
+    # AWS Lambda development
+    "aws-lambda-powertools[parser]>=3.8.0",
+    "boto3>=1.37.31",
+    "pydantic>=2.0.0",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["chatbot_messaging_backend"]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[dependency-groups]
+dev = [
+    # Code formatting and linting
+    "autopep8>=2.3.1",
+    "ruff>=0.8.2",
+
+    # Testing
+    "pytest>=8.3.5",
+    "pytest-sugar>=1.0.0",
+
+    # AWS-specific tools
+    "moto[all]>=5.0.16",
+    "boto3-stubs-lite[dynamodb,sns]>=1.37.31",
+
+    # HTTP client for e2e tests
+    "requests>=2.31.0",
+
+    # Environment management
+    "python-dotenv>=1.1.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+exclude = [
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "dist",
+]
+
+line-length = 120
+indent-width = 4
+
+[tool.ruff.lint]
+select = [
+    # pycodestyle
+    "E",
+    # Pyflakes
+    "F",
+    # pyupgrade
+    "UP",
+    # flake8-bugbear
+    "B",
+    # flake8-simplify
+    "SIM",
+    # isort
+    "I",
+]
+ignore = []
+
+fixable = ["ALL"]
+unfixable = []
+
+[tool.pytest.ini_options]
+markers = [
+    "integration: marks tests as integration tests",
+    "e2e: marks tests as end-to-end tests requiring deployed infrastructure",
+]
+testpaths = ["tests"]
+addopts = "-m 'not integration and not e2e'"

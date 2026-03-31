@@ -1,0 +1,89 @@
+# Multi-stage Dockerfile for Chat agent in workspace context
+# Optimized for Amazon Bedrock AgentCore Runtime deployment
+
+FROM public.ecr.aws/docker/library/python:3.14-slim AS builder
+
+# Install system dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl ca-certificates && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Download and install uv
+RUN curl -LsSf https://astral.sh/uv/install.sh -o /uv-installer.sh && \
+    sh /uv-installer.sh && rm /uv-installer.sh
+
+# Ensure uv is on PATH
+ENV PATH="/root/.local/bin/:$PATH"
+
+# Enable bytecode compilation for faster startup
+ENV UV_COMPILE_BYTECODE=1
+
+# Use copy link mode to avoid warnings about hard links
+ENV UV_LINK_MODE=copy
+
+# Set working directory
+WORKDIR /app
+
+# Copy workspace root configuration files
+COPY pyproject.toml uv.lock ./
+COPY README.md ./
+
+# Copy chat package configuration (but not source code yet)
+COPY virtual-assistant-chat/pyproject.toml ./virtual-assistant-chat/
+COPY virtual-assistant-chat/README.md ./virtual-assistant-chat/
+
+# Install dependencies only (not the project itself)
+# This layer is cached unless dependencies change
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --no-dev --no-install-workspace --package virtual-assistant-chat
+
+# Clear workspace packages from uv cache to force reinstall from source
+RUN --mount=type=cache,target=/root/.cache/uv \
+    rm -rf /root/.cache/uv/wheels/virtual-assistant-* /root/.cache/uv/built-wheels/virtual-assistant-*
+
+# Copy required workspace packages (common only)
+COPY virtual-assistant-common/ ./virtual-assistant-common/
+
+# Copy chat source code
+COPY virtual-assistant-chat/virtual_assistant_chat/ ./virtual-assistant-chat/virtual_assistant_chat/
+
+# Install the project in non-editable mode
+RUN uv sync --frozen --no-dev --no-editable --package virtual-assistant-chat
+
+# Final stage - minimal runtime image
+FROM public.ecr.aws/docker/library/python:3.14-slim
+
+# Install only curl for health checks
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Create non-root user
+RUN addgroup --system --gid 1001 appgroup && \
+    adduser --system --uid 1001 --gid 1001 appuser
+
+# Set working directory
+WORKDIR /app
+
+# Copy the virtual environment from builder
+COPY --from=builder --chown=appuser:appgroup /app/.venv /app/.venv
+
+# Set environment variables
+ENV PATH="/app/.venv/bin:$PATH"
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONPATH="/app"
+
+# Switch to non-root user
+USER appuser
+
+# Expose port for health checks
+EXPOSE 8080
+
+# Add healthcheck
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:8080/ping || exit 1
+
+# Use the main function as the entry point for Chat agent
+ENTRYPOINT ["opentelemetry-instrument", "python", "-m", "virtual_assistant_chat.agent"]

@@ -1,0 +1,85 @@
+### pyproject.toml for Backend CDK Project
+
+[project]
+name = "backend-cdk"
+version = "1.0.0"
+description = "AWS CDK infrastructure for the backend application"
+requires-python = ">=3.13,<4"
+dependencies = [
+    "aws-cdk-lib>=2.233.0",
+    "aws-cdk-aws-lambda-python-alpha>=2.233.0a0",
+    "constructs>=10.0.0,<11.0.0",
+    "cdk_nag>=2.35.81",
+    "boto3>=1.40.2",
+    "cdklabs-generative-ai-cdk-constructs>=0.1.309",
+    "aws-cdk-aws-bedrock-agentcore-alpha>=2.233.0a0",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["stack"]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[dependency-groups]
+dev = [
+    # Code formatting and linting
+    "autopep8>=2.3.1",
+    "ruff>=0.8.2",
+    
+    # Testing
+    "pytest>=8.3.5",
+    "pytest-sugar>=1.0.0",
+    
+    # AWS-specific tools
+    "boto3-stubs-lite[cloudformation,s3,lambda,iam]>=1.37.31",
+    
+    # Environment management
+    "python-dotenv>=1.1.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+exclude = [
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "dist",
+    "cdk.out",
+]
+
+line-length = 120
+indent-width = 4
+
+[tool.ruff.lint]
+select = [
+    # pycodestyle
+    "E",
+    # Pyflakes
+    "F",
+    # pyupgrade
+    "UP",
+    # flake8-bugbear
+    "B",
+    # flake8-simplify
+    "SIM",
+    # isort
+    "I",
+]
+ignore = []
+
+fixable = ["ALL"]
+unfixable = []
+
+
+
+[tool.pytest.ini_options]
+markers = [
+    "integration: marks tests as integration tests",
+]
+testpaths = ["tests"]
+addopts = "-m 'not integration'"

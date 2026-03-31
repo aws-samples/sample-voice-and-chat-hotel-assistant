@@ -1,0 +1,22 @@
+# Gitleaks ignore file for false positives
+# Test files with mock passwords
+d7b6fc9d6a734e1ed412cf5c479eeab1d245ccfa:packages/hotel-pms-lambda/tests/test_database.py:hashicorp-tf-password:85
+d7b6fc9d6a734e1ed412cf5c479eeab1d245ccfa:packages/hotel-pms-lambda/tests/test_database.py:hashicorp-tf-password:33
+# Design documentation with example keys
+81cbf6de6330ad098a77c1a3d17f5804b97277d8:.kiro/specs/mcp-ssm-secure-configuration/design.md:generic-api-key:211
+78f130fa834a43f85dc3f87132d9db8c675995c8:.kiro/specs/hotel-assistant-messaging-migration/design.md:generic-api-key:357
+78f130fa834a43f85dc3f87132d9db8c675995c8:.kiro/specs/hotel-assistant-messaging-migration/design.md:generic-api-key:361
+78f130fa834a43f85dc3f87132d9db8c675995c8:.kiro/specs/hotel-assistant-messaging-migration/design.md:generic-api-key:370
+78f130fa834a43f85dc3f87132d9db8c675995c8:.kiro/specs/hotel-assistant-messaging-migration/design.md:generic-api-key:373
+# Example API keys in documentation
+a21ea2f7e12356e326779a8f3bd9574c055d2d79:.kiro/specs/agentcore-gateway-integration/design.md:generic-api-key:381
+a21ea2f7e12356e326779a8f3bd9574c055d2d79:packages/virtual-assistant/virtual-assistant-common/README.md:generic-api-key:304
+a21ea2f7e12356e326779a8f3bd9574c055d2d79:.kiro/specs/virtual-assistant-mcp-integration/design.md:generic-api-key:221
+a21ea2f7e12356e326779a8f3bd9574c055d2d79:.kiro/specs/agentcore-gateway-integration/design.md:generic-api-key:405
+# Documentation curl examples with placeholder Bearer tokens
+5cc8f41d0bb87ed1195c2b03c5e59e9ae947c1a5:packages/chatbot-messaging-backend/README.md:curl-auth-header:201
+5cc8f41d0bb87ed1195c2b03c5e59e9ae947c1a5:packages/chatbot-messaging-backend/README.md:curl-auth-header:243
+5cc8f41d0bb87ed1195c2b03c5e59e9ae947c1a5:packages/chatbot-messaging-backend/README.md:curl-auth-header:307
+5cc8f41d0bb87ed1195c2b03c5e59e9ae947c1a5:packages/chatbot-messaging-backend/README.md:curl-auth-header:311
+a4617ed111a1cb4659cdb8f346a91ac7a56c783e:packages/hotel-assistant-chat/README.md:curl-auth-header:674
+f0cb52652cd3851eff440c5f4aeb5dba76742e06:packages/infra/AGENTCORE_GATEWAY_DEPLOYMENT.md:curl-auth-header:59

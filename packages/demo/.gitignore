@@ -1,0 +1,3 @@
+public/runtime-config.json
+.tanstack/
+*.gen.ts

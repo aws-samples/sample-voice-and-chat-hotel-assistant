@@ -1,0 +1,1058 @@
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: MIT-0
+
+# checkov:skip=CKV_OPENAPI_4:This spec defines MCP tool schemas for AgentCore Gateway, not a public API
+# checkov:skip=CKV_OPENAPI_5:This spec defines MCP tool schemas for AgentCore Gateway, not a public API
+# checkov:skip=CKV_OPENAPI_21:Response arrays are bounded by database seed data
+openapi: 3.0.3
+info:
+  title: Hotel PMS API
+  description: 'Hotel Property Management System API for managing hotel reservations and guest services.
+
+
+    Use this API to help guests find available rooms, get pricing quotes, make reservations,
+
+    and manage their hotel stays. The API supports the complete guest journey from initial
+
+    availability inquiry through checkout.
+
+    '
+  version: 1.0.0
+  contact:
+    name: Hotel PMS API Support
+components:
+  schemas:
+    AvailabilityRequest:
+      type: object
+      required:
+      - hotel_id
+      - check_in_date
+      - check_out_date
+      - guests
+      properties:
+        hotel_id:
+          type: string
+          description: Unique identifier for the hotel
+          example: H-PVR-002
+        check_in_date:
+          type: string
+          format: date
+          description: Check-in date in YYYY-MM-DD format
+          example: '2024-03-15'
+        check_out_date:
+          type: string
+          format: date
+          description: Check-out date in YYYY-MM-DD format
+          example: '2024-03-17'
+        guests:
+          type: integer
+          minimum: 1
+          maximum: 10
+          description: Number of guests
+          example: 2
+        package_type:
+          type: string
+          enum:
+          - simple
+          - detailed
+          description: Response detail level (simple or detailed)
+          default: simple
+    AvailabilityResponse:
+      type: object
+      properties:
+        hotel_id:
+          type: string
+          description: Hotel identifier
+        check_in_date:
+          type: string
+          format: date
+          description: Check-in date
+        check_out_date:
+          type: string
+          format: date
+          description: Check-out date
+        guests:
+          type: integer
+          description: Number of guests
+        available_room_types:
+          type: array
+          description: List of available room types with pricing
+          items:
+            type: object
+            properties:
+              room_type_id:
+                type: string
+                description: Room type identifier
+              available_rooms:
+                type: integer
+                description: Number of available rooms
+              base_rate:
+                type: number
+                format: float
+                description: Base rate per night
+              total_cost:
+                type: number
+                format: float
+                description: Total cost for the stay (only in detailed package)
+    QuoteRequest:
+      type: object
+      required:
+      - hotel_id
+      - room_type_id
+      - check_in_date
+      - check_out_date
+      - guests
+      properties:
+        hotel_id:
+          type: string
+          description: Unique identifier for the hotel
+          example: H-PVR-002
+        room_type_id:
+          type: string
+          description: Unique identifier for the room type
+          example: RT-STD
+        check_in_date:
+          type: string
+          format: date
+          description: Check-in date in YYYY-MM-DD format
+          example: '2024-03-15'
+        check_out_date:
+          type: string
+          format: date
+          description: Check-out date in YYYY-MM-DD format
+          example: '2024-03-17'
+        guests:
+          type: integer
+          minimum: 1
+          maximum: 10
+          description: Number of guests
+          example: 2
+        package_type:
+          type: string
+          enum:
+          - simple
+          - detailed
+          description: Response detail level (simple or detailed)
+          default: simple
+    QuoteResponse:
+      type: object
+      properties:
+        hotel_id:
+          type: string
+          description: Hotel identifier
+        room_type_id:
+          type: string
+          description: Room type identifier
+        check_in_date:
+          type: string
+          format: date
+          description: Check-in date
+        check_out_date:
+          type: string
+          format: date
+          description: Check-out date
+        guests:
+          type: integer
+          description: Number of guests
+        nights:
+          type: integer
+          description: Number of nights
+        base_rate:
+          type: number
+          format: float
+          description: Base rate per night
+        total_cost:
+          type: number
+          format: float
+          description: Total cost for the stay
+        quote_id:
+          type: string
+          description: Unique quote identifier (required for reservation creation)
+        expires_at:
+          type: string
+          format: date-time
+          description: Quote expiration timestamp
+        guest_multiplier:
+          type: number
+          format: float
+          description: Guest count multiplier (only in detailed package)
+        pricing_breakdown:
+          type: object
+          description: Detailed pricing breakdown (only in detailed package)
+          properties:
+            base_rate_per_night:
+              type: number
+              format: float
+            nights:
+              type: integer
+            guest_multiplier:
+              type: number
+              format: float
+            subtotal:
+              type: number
+              format: float
+            total_with_guest_adjustment:
+              type: number
+              format: float
+    ReservationRequest:
+      type: object
+      required:
+      - quote_id
+      - guest_name
+      - guest_email
+      - guest_phone
+      properties:
+        quote_id:
+          type: string
+          description: Quote ID from generate_quote operation (required for reservation)
+          example: Q-20240315-ABC123
+        guest_name:
+          type: string
+          description: Full name of the primary guest
+          example: John Doe
+        guest_email:
+          type: string
+          format: email
+          description: Email address of the guest
+          example: john.doe@example.com
+        guest_phone:
+          type: string
+          description: Phone number of the guest (optional)
+          example: +1-555-123-4567
+    ReservationResponse:
+      type: object
+      properties:
+        reservation_id:
+          type: string
+          description: Unique reservation identifier
+        status:
+          type: string
+          enum:
+          - confirmed
+          - checked_in
+          - checked_out
+          - cancelled
+          description: Reservation status
+        hotel_id:
+          type: string
+          description: Hotel identifier
+        guest_name:
+          type: string
+          description: Guest name
+        guest_email:
+          type: string
+          description: Guest email
+        guest_phone:
+          type: string
+          description: Guest phone
+        check_in_date:
+          type: string
+          format: date
+          description: Check-in date
+        check_out_date:
+          type: string
+          format: date
+          description: Check-out date
+        room_type_id:
+          type: string
+          description: Room type identifier
+        total_cost:
+          type: number
+          format: float
+          description: Total reservation cost
+        created_at:
+          type: string
+          format: date-time
+          description: Reservation creation timestamp
+    ReservationUpdateRequest:
+      type: object
+      properties:
+        guest_name:
+          type: string
+          description: Updated guest name
+        guest_email:
+          type: string
+          format: email
+          description: Updated guest email
+        guest_phone:
+          type: string
+          description: Updated guest phone
+        status:
+          type: string
+          enum:
+          - confirmed
+          - checked_in
+          - checked_out
+          - cancelled
+          description: Updated reservation status
+    CheckoutRequest:
+      type: object
+      properties:
+        additional_charges:
+          type: number
+          format: float
+          description: Additional charges (room service, minibar, etc.)
+          example: 50.0
+        payment_method:
+          type: string
+          enum:
+          - card
+          - cash
+          - transfer
+          description: Payment method for checkout
+          example: card
+    CheckoutResponse:
+      type: object
+      properties:
+        reservation_id:
+          type: string
+          description: Reservation identifier
+        status:
+          type: string
+          enum:
+          - checked_out
+          description: Updated reservation status
+        final_bill:
+          type: number
+          format: float
+          description: Final bill amount including additional charges
+        checkout_time:
+          type: string
+          format: date-time
+          description: Checkout timestamp
+    HotelsResponse:
+      type: object
+      properties:
+        hotels:
+          type: array
+          description: List of available hotels
+          items:
+            type: object
+            properties:
+              hotel_id:
+                type: string
+                description: Hotel identifier
+              name:
+                type: string
+                description: Hotel name
+              location:
+                type: string
+                description: Hotel location
+              timezone:
+                type: string
+                description: Hotel timezone
+    HousekeepingRequest:
+      type: object
+      required:
+      - hotel_id
+      - room_number
+      - guest_name
+      - request_type
+      properties:
+        hotel_id:
+          type: string
+          description: Unique identifier for the hotel
+          example: H-PVR-002
+        room_number:
+          type: string
+          description: Room number where service is needed
+          example: '101'
+        guest_name:
+          type: string
+          description: Name of the guest making the request
+          example: John Doe
+        request_type:
+          type: string
+          enum:
+          - cleaning
+          - maintenance
+          - amenities
+          - towels
+          - other
+          description: Type of housekeeping request
+          example: cleaning
+        description:
+          type: string
+          description: Detailed description of the request
+          example: Please clean the bathroom and replace towels
+    HousekeepingResponse:
+      type: object
+      properties:
+        request_id:
+          type: string
+          description: Unique request identifier
+        hotel_id:
+          type: string
+          description: Hotel identifier
+        room_number:
+          type: string
+          description: Room number
+        guest_name:
+          type: string
+          description: Guest name
+        request_type:
+          type: string
+          description: Request type
+        description:
+          type: string
+          description: Request description
+        status:
+          type: string
+          enum:
+          - pending
+          - in_progress
+          - completed
+          description: Request status
+        created_at:
+          type: string
+          format: date-time
+          description: Request creation timestamp
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      - error_code
+      - message
+      properties:
+        error:
+          type: boolean
+          description: Indicates an error occurred
+        error_code:
+          type: string
+          description: Machine-readable error code (e.g., VALIDATION_ERROR, NOT_FOUND, INTERNAL_ERROR)
+        message:
+          type: string
+          description: Human-readable error message
+        details:
+          type: array
+          description: Array of field-level validation errors (present for VALIDATION_ERROR)
+          items:
+            type: object
+            required:
+            - field
+            - message
+            - type
+            properties:
+              field:
+                type: string
+                description: Field path that failed validation (e.g., "guests", "check_in_date")
+              message:
+                type: string
+                description: Human-readable error message for this field
+              type:
+                type: string
+                description: Error type (e.g., "int_type", "greater_than_equal", "value_error")
+              input:
+                description: The invalid input value that was provided
+paths:
+  /availability/check:
+    post:
+      summary: Check room availability
+      description: 'Find out what rooms are available at a hotel for specific dates and number of guests.
+
+        Use this when a guest wants to see their options before booking. You''ll get back
+
+        a list of room types that have availability, along with how many rooms are free
+
+        and the nightly rate for each type. This is always the first step before making
+
+        a reservation.
+
+        '
+      operationId: check_availability
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AvailabilityRequest'
+            examples:
+              simple_check:
+                summary: Simple availability check
+                value:
+                  hotel_id: H-PVR-002
+                  check_in_date: '2024-03-15'
+                  check_out_date: '2024-03-17'
+                  guests: 2
+              detailed_check:
+                summary: Detailed availability check with total costs
+                value:
+                  hotel_id: H-PVR-002
+                  check_in_date: '2024-03-15'
+                  check_out_date: '2024-03-17'
+                  guests: 2
+                  package_type: detailed
+      responses:
+        '200':
+          description: Availability check completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AvailabilityResponse'
+              examples:
+                available_rooms:
+                  summary: Available rooms found
+                  value:
+                    hotel_id: H-PVR-002
+                    check_in_date: '2024-03-15'
+                    check_out_date: '2024-03-17'
+                    guests: 2
+                    available_room_types:
+                    - room_type_id: RT-STD
+                      available_rooms: 5
+                      base_rate: 150.0
+                    - room_type_id: RT-DLX
+                      available_rooms: 2
+                      base_rate: 200.0
+        '400':
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /quotes/generate:
+    post:
+      summary: Generate pricing quote
+      description: 'Get an exact price quote for a specific room type and dates. Use this when
+
+        a guest has decided on a room type and wants to see the total cost breakdown.
+
+        The quote gives you a quote_id that you must use to create the actual reservation.
+
+        Quotes are valid for 6 hours, so the guest needs to book within that time.
+
+        '
+      operationId: generate_quote
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuoteRequest'
+            examples:
+              simple_quote:
+                summary: Simple quote generation
+                value:
+                  hotel_id: H-PVR-002
+                  room_type_id: RT-STD
+                  check_in_date: '2024-03-15'
+                  check_out_date: '2024-03-17'
+                  guests: 2
+              detailed_quote:
+                summary: Detailed quote with pricing breakdown
+                value:
+                  hotel_id: H-PVR-002
+                  room_type_id: RT-STD
+                  check_in_date: '2024-03-15'
+                  check_out_date: '2024-03-17'
+                  guests: 2
+                  package_type: detailed
+      responses:
+        '200':
+          description: Quote generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuoteResponse'
+              examples:
+                generated_quote:
+                  summary: Successfully generated quote
+                  value:
+                    hotel_id: H-PVR-002
+                    room_type_id: RT-STD
+                    check_in_date: '2024-03-15'
+                    check_out_date: '2024-03-17'
+                    guests: 2
+                    nights: 2
+                    base_rate: 150.0
+                    total_cost: 300.0
+                    quote_id: Q-20240315-ABC123
+                    expires_at: '2024-03-15T18:00:00Z'
+        '400':
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /reservations:
+    post:
+      summary: Create reservation
+      description: 'Book a hotel room for a guest using a quote_id from a previous quote.
+
+        This finalizes the reservation and confirms the booking. You need the
+
+        guest''s name, email, and optionally their phone number. The quote must
+
+        still be valid (not expired) to complete the booking.
+
+        '
+      operationId: create_reservation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReservationRequest'
+            examples:
+              new_reservation:
+                summary: Create new reservation
+                value:
+                  quote_id: Q-20240315-ABC123
+                  guest_name: John Doe
+                  guest_email: john.doe@example.com
+                  guest_phone: +1-555-123-4567
+      responses:
+        '200':
+          description: Reservation created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservationResponse'
+              examples:
+                created_reservation:
+                  summary: Successfully created reservation
+                  value:
+                    reservation_id: R-20240315-XYZ789
+                    status: confirmed
+                    hotel_id: H-PVR-002
+                    guest_name: John Doe
+                    guest_email: john.doe@example.com
+                    guest_phone: +1-555-123-4567
+                    check_in_date: '2024-03-15'
+                    check_out_date: '2024-03-17'
+                    room_type_id: RT-STD
+                    total_cost: 300.0
+                    created_at: '2024-03-15T12:00:00Z'
+        '400':
+          description: Invalid request parameters or expired quote
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    get:
+      summary: Get reservations
+      description: 'Find existing reservations by searching for a guest''s email or looking up
+
+        all reservations at a specific hotel. Use this when a guest asks about
+
+        their booking or when hotel staff need to see current reservations.
+
+        You can limit how many results you get back.
+
+        '
+      operationId: get_reservations
+      parameters:
+      - name: hotel_id
+        in: query
+        schema:
+          type: string
+        description: Filter reservations by hotel ID
+        example: H-PVR-002
+      - name: guest_email
+        in: query
+        schema:
+          type: string
+          format: email
+        description: Filter reservations by guest email
+        example: john.doe@example.com
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 10
+        description: Maximum number of reservations to return
+        example: 10
+      responses:
+        '200':
+          description: Reservations retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reservations:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ReservationResponse'
+                  total_count:
+                    type: integer
+                    description: Total number of matching reservations
+              examples:
+                reservations_list:
+                  summary: List of reservations
+                  value:
+                    reservations:
+                    - reservation_id: R-20240315-XYZ789
+                      status: confirmed
+                      hotel_id: H-PVR-002
+                      guest_name: John Doe
+                      guest_email: john.doe@example.com
+                      check_in_date: '2024-03-15'
+                      check_out_date: '2024-03-17'
+                      room_type_id: RT-STD
+                      total_cost: 300.0
+                    total_count: 1
+        '400':
+          description: Invalid query parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /reservations/{reservation_id}:
+    get:
+      summary: Get reservation details
+      description: 'Look up all the details of a specific reservation when you have the
+
+        reservation ID. This shows you everything about the booking: guest info,
+
+        check-in/out dates, room type, total cost, and current status (confirmed,
+
+        checked in, checked out, etc.).
+
+        '
+      operationId: get_reservation
+      parameters:
+      - name: reservation_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Unique reservation identifier
+        example: R-20240315-XYZ789
+      responses:
+        '200':
+          description: Reservation details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservationResponse'
+              examples:
+                reservation_details:
+                  summary: Reservation details
+                  value:
+                    reservation_id: R-20240315-XYZ789
+                    status: confirmed
+                    hotel_id: H-PVR-002
+                    guest_name: John Doe
+                    guest_email: john.doe@example.com
+                    guest_phone: +1-555-123-4567
+                    check_in_date: '2024-03-15'
+                    check_out_date: '2024-03-17'
+                    room_type_id: RT-STD
+                    total_cost: 300.0
+                    created_at: '2024-03-15T12:00:00Z'
+        '404':
+          description: Reservation not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                not_found:
+                  summary: Reservation not found
+                  value:
+                    error: true
+                    error_code: NOT_FOUND
+                    message: Reservation not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      summary: Update reservation
+      description: 'Change details of an existing reservation. Use this when a guest needs
+
+        to update their contact information, or when hotel staff need to change
+
+        the reservation status (like marking a guest as checked in). You can
+
+        update the guest''s name, email, phone, or reservation status.
+
+        '
+      operationId: update_reservation
+      parameters:
+      - name: reservation_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Unique reservation identifier
+        example: R-20240315-XYZ789
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReservationUpdateRequest'
+            examples:
+              update_guest_info:
+                summary: Update guest information
+                value:
+                  guest_name: John Smith
+                  guest_email: john.smith@example.com
+                  guest_phone: +1-555-987-6543
+              update_status:
+                summary: Update reservation status
+                value:
+                  status: checked_in
+      responses:
+        '200':
+          description: Reservation updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservationResponse'
+              examples:
+                updated_reservation:
+                  summary: Successfully updated reservation
+                  value:
+                    reservation_id: R-20240315-XYZ789
+                    status: checked_in
+                    hotel_id: H-PVR-002
+                    guest_name: John Smith
+                    guest_email: john.smith@example.com
+                    guest_phone: +1-555-987-6543
+                    check_in_date: '2024-03-15'
+                    check_out_date: '2024-03-17'
+                    room_type_id: RT-STD
+                    total_cost: 300.0
+                    created_at: '2024-03-15T12:00:00Z'
+        '404':
+          description: Reservation not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Invalid update parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /reservations/{reservation_id}/checkout:
+    post:
+      summary: Checkout guest
+      description: 'Complete a guest''s checkout when they''re leaving the hotel. Use this
+
+        to finalize their stay and calculate the final bill. You can add any
+
+        extra charges (like room service or minibar) and specify how they''re
+
+        paying (card, cash, or bank transfer).
+
+        '
+      operationId: checkout_guest
+      parameters:
+      - name: reservation_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Unique reservation identifier
+        example: R-20240315-XYZ789
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CheckoutRequest'
+            examples:
+              simple_checkout:
+                summary: Simple checkout without additional charges
+                value:
+                  payment_method: card
+              checkout_with_charges:
+                summary: Checkout with additional charges
+                value:
+                  additional_charges: 75.5
+                  payment_method: card
+      responses:
+        '200':
+          description: Checkout completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckoutResponse'
+              examples:
+                checkout_complete:
+                  summary: Successful checkout
+                  value:
+                    reservation_id: R-20240315-XYZ789
+                    status: checked_out
+                    final_bill: 375.5
+                    checkout_time: '2024-03-17T11:00:00Z'
+        '404':
+          description: Reservation not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Invalid checkout parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /hotels:
+    get:
+      summary: Get hotels list
+      description: 'See all the hotels you can make reservations for. This gives you the
+
+        hotel names, locations, and their unique IDs that you''ll need for other
+
+        operations. Use this when a guest wants to know what hotel options are
+
+        available, or when you need a hotel ID for checking availability.
+
+        '
+      operationId: get_hotels
+      parameters:
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 10
+        description: Maximum number of hotels to return
+        example: 10
+      responses:
+        '200':
+          description: Hotels list retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HotelsResponse'
+              examples:
+                hotels_list:
+                  summary: Available hotels
+                  value:
+                    hotels:
+                    - hotel_id: H-PVR-002
+                      name: Paraiso Vallarta
+                      location: Puerto Vallarta, Mexico
+                      timezone: America/Mexico_City
+                    - hotel_id: H-TUL-001
+                      name: Paraiso Tulum
+                      location: Tulum, Mexico
+                      timezone: America/Mexico_City
+                    - hotel_id: H-CAB-003
+                      name: Paraiso Los Cabos
+                      location: Los Cabos, Mexico
+                      timezone: America/Mazatlan
+                    - hotel_id: H-CAN-004
+                      name: Grand Paraiso Resort & Spa
+                      location: Cancun, Mexico
+                      timezone: America/Cancun
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /requests/housekeeping:
+    post:
+      summary: Create housekeeping request
+      description: 'Submit a request for housekeeping or maintenance service in a guest''s room.
+
+        Use this when a guest needs extra towels, room cleaning, or reports something
+
+        that needs fixing (like broken air conditioning). The hotel staff will receive
+
+        and track the request until it''s completed.
+
+        '
+      operationId: create_housekeeping_request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HousekeepingRequest'
+            examples:
+              cleaning_request:
+                summary: Room cleaning request
+                value:
+                  hotel_id: H-PVR-002
+                  room_number: '101'
+                  guest_name: John Doe
+                  request_type: cleaning
+                  description: Please clean the bathroom and replace towels
+              maintenance_request:
+                summary: Maintenance request
+                value:
+                  hotel_id: H-PVR-002
+                  room_number: '205'
+                  guest_name: Jane Smith
+                  request_type: maintenance
+                  description: Air conditioning is not working properly
+      responses:
+        '200':
+          description: Housekeeping request created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HousekeepingResponse'
+              examples:
+                request_created:
+                  summary: Successfully created request
+                  value:
+                    request_id: REQ-20240315-001
+                    hotel_id: H-PVR-002
+                    room_number: '101'
+                    guest_name: John Doe
+                    request_type: cleaning
+                    description: Please clean the bathroom and replace towels
+                    status: pending
+                    created_at: '2024-03-15T14:30:00Z'
+        '400':
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'

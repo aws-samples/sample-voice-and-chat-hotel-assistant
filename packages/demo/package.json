@@ -1,0 +1,13 @@
+{
+  "name": "@virtual-assistant/demo",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "license": "MIT-0",
+  "description": "Hotel Assistant messaging application",
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.1.0",
+    "@testing-library/user-event": "14.6.1"
+  }
+}

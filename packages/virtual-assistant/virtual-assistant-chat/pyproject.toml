@@ -1,0 +1,96 @@
+### pyproject.toml Template for Python Projects
+### Copy this template and customize the project-specific sections
+
+[project]
+name = "virtual-assistant-chat"
+version = "1.0.0"
+description = "Virtual assistant chat functionality"
+requires-python = ">=3.13,<4"
+dependencies = [
+    "strands-agents>=1.14.0",
+    "bedrock-agentcore[strands-agents]>=0.1.3",
+    "mcp",
+    "boto3>=1.37.31",
+    "httpx>=0.27.0",
+    "fastapi",
+    "uvicorn[standard]",
+    "pydantic",
+    "virtual-assistant-common",
+    "strands-agents-evals>=0.1.7",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["virtual_assistant_chat"]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[dependency-groups]
+dev = [
+    # Code formatting and linting
+    "autopep8>=2.3.1",
+    "bedrock-agentcore-starter-toolkit>=0.1.8",
+    "hypothesis>=6.148.8",
+    "pytest>=8.4.1",
+    "pytest-asyncio>=1.1.0",
+    "pytest-cov>=7.0.0",
+    "python-dotenv>=1.1.1",
+    "ruff>=0.8.2",
+    # Testing (uncomment if needed)
+    # "pytest>=8.3.5",
+    # "pytest-sugar>=1.0.0",
+    # AWS-specific tools (uncomment if needed)
+    # "moto[all]>=5.0.16",
+    # "boto3-stubs-lite[bedrock-runtime,dynamodb,s3,ssm,stepfunctions,textract]>=1.37.31",
+    # Environment management (uncomment if needed)
+    # "python-dotenv>=1.1.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+exclude = [
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "dist",
+    # Add any generated files that should be excluded
+    # "**/models/schema.py",
+]
+
+line-length = 120
+indent-width = 4
+
+[tool.ruff.lint]
+select = [
+    # pycodestyle
+    "E",
+    # Pyflakes
+    "F",
+    # pyupgrade
+    "UP",
+    # flake8-bugbear
+    "B",
+    # flake8-simplify
+    "SIM",
+    # isort
+    "I",
+]
+ignore = []
+
+fixable = ["ALL"]
+unfixable = []
+
+### Uncomment if you have tests
+[tool.pytest.ini_options]
+markers = [
+    "integration: marks tests as integration tests",
+    "e2e: marks tests as end-to-end tests with real AWS services",
+    "slow: marks tests as slow running tests",
+]
+testpaths = ["tests"]
+addopts = "-m 'not integration'"
+asyncio_mode = "auto"

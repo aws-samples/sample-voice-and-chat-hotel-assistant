@@ -1,0 +1,63 @@
+[tool.uv.workspace]
+members = [
+    "virtual-assistant-livekit",
+    "virtual-assistant-chat", 
+    "virtual-assistant-common",
+    "virtual-assistant-messaging-lambda"
+]
+
+[tool.uv.sources]
+virtual-assistant-common = { workspace = true }
+
+# Workspace root - no package definition needed
+
+[dependency-groups]
+dev = [
+    # Shared development tools
+    "autopep8>=2.3.1",
+    "ruff>=0.8.2",
+    "pytest>=8.3.5",
+    "pytest-asyncio>=0.24.0",
+    "pytest-mock>=3.14.0",
+]
+
+# No build system needed for workspace root
+
+[tool.ruff]
+exclude = [
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "dist",
+]
+
+line-length = 120
+indent-width = 4
+
+[tool.ruff.lint]
+select = [
+    # pycodestyle
+    "E",
+    # Pyflakes
+    "F",
+    # pyupgrade
+    "UP",
+    # flake8-bugbear
+    "B",
+    # flake8-simplify
+    "SIM",
+    # isort
+    "I",
+]
+ignore = []
+
+fixable = ["ALL"]
+unfixable = []
+
+[tool.pytest.ini_options]
+markers = [
+    "integration: marks tests as integration tests",
+]
+testpaths = ["tests"]
+addopts = "-m 'not integration'"
