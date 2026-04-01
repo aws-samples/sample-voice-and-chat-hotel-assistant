@@ -7,15 +7,15 @@
     "deploy": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "uv run cdk deploy --all --require-approval=never",
+        "command": "cdk deploy --all --require-approval=never",
         "cwd": "packages/infra"
       },
       "configurations": {
         "virtual-assistant": {
-          "command": "uv run cdk deploy VirtualAssistantStack --require-approval=never"
+          "command": "cdk deploy VirtualAssistantStack --require-approval=never"
         },
         "hotel-pms": {
-          "command": "uv run cdk deploy HotelPmsStack --require-approval=never"
+          "command": "cdk deploy HotelPmsStack --require-approval=never"
         }
       },
       "dependsOn": [
@@ -30,15 +30,15 @@
     "diff": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "uv run cdk diff --all",
+        "command": "cdk diff --all",
         "cwd": "packages/infra"
       },
       "configurations": {
         "virtual-assistant": {
-          "command": "uv run cdk diff VirtualAssistantStack"
+          "command": "cdk diff VirtualAssistantStack"
         },
         "hotel-pms": {
-          "command": "uv run cdk diff HotelPmsStack"
+          "command": "cdk diff HotelPmsStack"
         }
       },
       "dependsOn": [
@@ -53,7 +53,7 @@
     "synth": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "uv run cdk synth -vvv --debug",
+        "command": "cdk synth",
         "cwd": "packages/infra"
       },
       "dependsOn": [
@@ -68,22 +68,22 @@
     "destroy": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "uv run cdk destroy --all",
+        "command": "cdk destroy --all",
         "cwd": "packages/infra"
       },
       "configurations": {
         "virtual-assistant": {
-          "command": "uv run cdk destroy VirtualAssistantStack"
+          "command": "cdk destroy VirtualAssistantStack"
         },
         "hotel-pms": {
-          "command": "uv run cdk destroy HotelPmsStack"
+          "command": "cdk destroy HotelPmsStack"
         }
       }
     },
     "bootstrap": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "uv run cdk bootstrap",
+        "command": "cdk bootstrap",
         "cwd": "packages/infra"
       }
     },

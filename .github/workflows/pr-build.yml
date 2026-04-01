@@ -21,6 +21,8 @@ jobs:
       - uses: astral-sh/setup-uv@v6
         with:
           python-version: '3.14'
+      - name: Install AWS CDK
+        run: npm install -g aws-cdk
       - name: Install dependencies
         run: pnpm install
       - name: CDK Synth
