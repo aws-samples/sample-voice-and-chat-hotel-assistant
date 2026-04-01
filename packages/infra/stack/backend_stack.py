@@ -288,13 +288,6 @@ class BackendStack(Stack):
                     "3) Step Functions task token callbacks (task tokens are opaque and cannot be scoped by ARN). "
                     "These permissions are automatically configured by the L2 construct and are scoped to "
                     "appropriate service namespaces for AgentCore functionality.",
-                    applies_to=[
-                        f"Resource::arn:aws:logs:{self.region}:{self.account}:log-group:/aws/bedrock-agentcore/runtimes/*",
-                        f"Resource::arn:aws:logs:{self.region}:{self.account}:log-group:*",
-                        f"Resource::arn:aws:logs:{self.region}:{self.account}:log-group:/aws/bedrock-agentcore/runtimes/*:log-stream:*",
-                        "Resource::*",
-                        f"Resource::arn:aws:bedrock-agentcore:{self.region}:{self.account}:workload-identity-directory/default/workload-identity/*",
-                    ],
                 )
             ],
             apply_to_children=True,
@@ -676,9 +669,6 @@ class BackendStack(Stack):
                         "reason": "Lambda requires wildcard in execute-api resource ARN to invoke "
                         "PUT /messages/*/status across all API Gateway stages and API IDs. "
                         "The permission is scoped to a specific route pattern.",
-                        "appliesTo": [
-                            f"Resource::arn:aws:execute-api:{self.region}:{self.account}:*/*/PUT/messages/*/status",
-                        ],
                     },
                 ],
                 apply_to_children=True,

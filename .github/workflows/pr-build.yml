@@ -26,4 +26,4 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: CDK Synth
-        run: pnpm exec nx run --outputStyle stream infra:synth
+        run: pnpm exec nx run infra:synth
