@@ -1,0 +1,146 @@
+{
+  "mcpServers": {
+    "Lambda Powertools": {
+      "command": "pnpx",
+      "args": [
+        "powertools-for-aws-mcp"
+      ],
+      "env": {
+        "AWS_REGION": "us-east-1"
+      },
+      "disabled": true,
+      "autoApprove": [
+        "search_docs",
+        "fetch_doc_page"
+      ]
+    },
+    "awslabs.aws-diagram-mcp-server": {
+      "command": "uvx",
+      "args": [
+        "awslabs.aws-diagram-mcp-server"
+      ],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": true,
+      "autoApprove": [
+        "generate_diagram",
+        "get_diagram_examples",
+        "list_icons"
+      ]
+    },
+    "awslabs.aws-pricing-mcp-server": {
+      "command": "uvx",
+      "args": [
+        "awslabs.aws-pricing-mcp-server@latest"
+      ],
+      "env": {
+        "AWS_PROFILE": "strunkjd-Admin",
+        "AWS_REGION": "us-east-1",
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false,
+      "autoApprove": [
+        "analyze_cdk_project",
+        "get_pricing_service_codes",
+        "get_pricing_service_attributes",
+        "get_pricing_service_attributes",
+        "get_pricing_service_attributes",
+        "get_pricing_service_attributes",
+        "get_pricing_service_attributes",
+        "get_pricing",
+        "get_pricing_attribute_values",
+        "generate_cost_report"
+      ]
+    },
+    "bedrock-agentcore-mcp-server": {
+      "command": "uvx",
+      "args": [
+        "awslabs.amazon-bedrock-agentcore-mcp-server@latest"
+      ],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": true,
+      "autoApprove": [
+        "search_agentcore_docs",
+        "fetch_agentcore_doc"
+      ]
+    },
+    "github.com/awslabs/mcp/tree/main/src/aws-documentation-mcp-server": {
+      "command": "uvx",
+      "args": [
+        "awslabs.aws-documentation-mcp-server@latest"
+      ],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false,
+      "autoApprove": [
+        "read_documentation",
+        "search_documentation",
+        "recommend",
+        "read_sections"
+      ]
+    },
+    "github.com/awslabs/mcp/tree/main/src/cdk-mcp-server": {
+      "command": "uvx",
+      "args": [
+        "awslabs.cdk-mcp-server@latest"
+      ],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": true,
+      "autoApprove": [
+        "CDKGeneralGuidance",
+        "ExplainCDKNagRule",
+        "CheckCDKNagSuppressions",
+        "GenerateBedrockAgentSchema",
+        "GetAwsSolutionsConstructPattern",
+        "SearchGenAICDKConstructs",
+        "LambdaLayerDocumentationProvider"
+      ]
+    },
+    "github.com/awslabs/mcp/tree/main/src/core-mcp-server": {
+      "command": "uvx",
+      "args": [
+        "awslabs.core-mcp-server@latest"
+      ],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": true,
+      "autoApprove": [
+        "prompt_understanding"
+      ]
+    },
+    "nx-mcp": {
+      "command": "pnpx",
+      "args": [
+        "nx-mcp@latest"
+      ],
+      "disabled": true,
+      "autoApprove": [
+        "nx_docs",
+        "nx_available_plugins",
+        "nx_docs",
+        "nx_workspace"
+      ]
+    },
+    "strands": {
+      "command": "uvx",
+      "args": [
+        "strands-agents-mcp-server"
+      ],
+      "disabled": false,
+      "autoApprove": [
+        "quickstart",
+        "model_providers",
+        "agent_tools",
+        "fetch_doc",
+        "search_docs"
+      ]
+    }
+  }
+}

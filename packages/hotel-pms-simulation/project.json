@@ -1,0 +1,115 @@
+{
+  "name": "hotel-pms-simulation",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "packages/hotel-pms-simulation/hotel_pms_simulation",
+  "targets": {
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run pytest",
+        "cwd": "packages/hotel-pms-simulation"
+      },
+      "dependsOn": ["generate-models"],
+      "configurations": {
+        "coverage": {
+          "command": "uv run pytest --cov=hotel_pms_simulation --cov-report=term-missing --cov-report=html"
+        },
+        "integration": {
+          "command": "uv run pytest -m integration"
+        },
+        "unit": {
+          "command": "uv run pytest -m 'not integration'"
+        }
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run ruff check .",
+        "cwd": "packages/hotel-pms-simulation"
+      },
+      "configurations": {
+        "fix": {
+          "command": "uv run ruff check --fix ."
+        }
+      }
+    },
+    "format": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run ruff format .",
+        "cwd": "packages/hotel-pms-simulation"
+      }
+    },
+    "type-check": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run mypy hotel_pms_simulation",
+        "cwd": "packages/hotel-pms-simulation"
+      }
+    },
+    "install": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv sync",
+        "cwd": "packages/hotel-pms-simulation"
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv build",
+        "cwd": "packages/hotel-pms-simulation"
+      },
+      "dependsOn": ["generate-models"],
+      "outputs": ["{projectRoot}/dist"]
+    },
+    "package": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "rm -rf dist/lambda/hotel-pms-handler",
+          "mkdir -p dist/lambda/hotel-pms-handler",
+          "uv pip install --no-installer-metadata --compile-bytecode --target dist/lambda/hotel-pms-handler/lambda_package --python-platform aarch64-manylinux2014 --python-version 3.14 .",
+          "cd dist/lambda/hotel-pms-handler/lambda_package && zip -r ../lambda.zip .",
+          "cd dist/lambda/hotel-pms-handler && rm -rf lambda_package"
+        ],
+        "parallel": false,
+        "cwd": "packages/hotel-pms-simulation"
+      },
+      "dependsOn": ["test", "generate-models"],
+      "inputs": [
+        "{projectRoot}/pyproject.toml",
+        "{projectRoot}/hotel_pms_simulation/**/*"
+      ],
+      "outputs": ["{projectRoot}/dist/lambda/hotel-pms-handler/lambda.zip"]
+    },
+    "generate-models": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "mkdir -p hotel_pms_simulation/models/generated",
+          "touch hotel_pms_simulation/models/generated/__init__.py",
+          "uv run datamodel-codegen --input openapi.source.yaml --output hotel_pms_simulation/models/generated/api_models.py --input-file-type openapi --output-model-type pydantic_v2.BaseModel --field-constraints --use-standard-collections --use-schema-description --use-field-description --use-default --use-default-kwarg --target-python-version 3.14 --formatters ruff-check ruff-format --disable-timestamp --custom-file-header \"$(sed '/^$/d' ../../LICENSE_HEADER | sed 's/^/# /')\""
+        ],
+        "parallel": false,
+        "cwd": "packages/hotel-pms-simulation"
+      },
+      "inputs": ["{projectRoot}/openapi.source.yaml"],
+      "outputs": [
+        "{projectRoot}/hotel_pms_simulation/models/generated/api_models.py"
+      ]
+    },
+    "prepare-deployment-spec": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run python scripts/prepare_deployment_spec.py",
+        "cwd": "packages/hotel-pms-simulation"
+      },
+      "inputs": ["{projectRoot}/openapi.source.yaml"],
+      "outputs": ["{projectRoot}/openapi.json"]
+    }
+  },
+  "tags": ["python", "lambda", "api", "backend"]
+}

@@ -1,0 +1,68 @@
+{
+  "name": "virtual-assistant-common",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "packages/virtual-assistant/virtual-assistant-common/virtual_assistant_common",
+  "targets": {
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run pytest",
+        "cwd": "packages/virtual-assistant/virtual-assistant-common"
+      },
+      "configurations": {
+        "coverage": {
+          "command": "uv run pytest --cov=virtual_assistant_common --cov-report=term-missing --cov-report=html"
+        },
+        "integration": {
+          "command": "uv run pytest -m integration"
+        },
+        "unit": {
+          "command": "uv run pytest -m 'not integration'"
+        }
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run ruff check .",
+        "cwd": "packages/virtual-assistant/virtual-assistant-common"
+      },
+      "configurations": {
+        "fix": {
+          "command": "uv run ruff check --fix ."
+        }
+      }
+    },
+    "format": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run ruff format .",
+        "cwd": "packages/virtual-assistant/virtual-assistant-common"
+      }
+    },
+    "type-check": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run mypy virtual_assistant_common",
+        "cwd": "packages/virtual-assistant/virtual-assistant-common"
+      }
+    },
+    "install": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv sync",
+        "cwd": "packages/virtual-assistant/virtual-assistant-common"
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv build",
+        "cwd": "packages/virtual-assistant/virtual-assistant-common"
+      },
+      "outputs": ["{projectRoot}/dist"]
+    }
+  },
+  "tags": ["python", "library", "common"]
+}

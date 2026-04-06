@@ -1,0 +1,95 @@
+[project]
+name = "virtual-assistant-messaging-lambda"
+version = "1.0.0"
+description = "Lambda function for processing virtual assistant messages from SQS queue"
+requires-python = ">=3.13,<4"
+readme = "README.md"
+dependencies = [
+    # AWS Lambda development
+    "aws-lambda-powertools[parser,tracer]>=3.8.0",
+    "aws-xray-sdk>=2.12.0",
+    "boto3>=1.37.31",
+    "httpx>=0.27.0",
+    "pydantic>=2.0.0",
+    # Shared virtual assistant components
+    "virtual-assistant-common",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["virtual_assistant_messaging_lambda"]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.uv.sources]
+virtual-assistant-common = { workspace = true }
+
+[tool.uv]
+constraint-dependencies = [
+    "pygments>=2.20.0",
+    "cryptography>=46.0.6",
+    "requests>=2.33.0",
+    "multipart>=1.3.1",
+    "joserfc>=1.6.3",
+    "werkzeug>=3.1.6",
+    "urllib3>=2.6.3",
+]
+
+[dependency-groups]
+dev = [
+    # Code formatting and linting
+    "autopep8>=2.3.1",
+    "ruff>=0.8.2",
+    # Testing
+    "pytest>=8.3.5",
+    "pytest-sugar>=1.0.0",
+    # AWS-specific tools
+    "moto[all]>=5.0.16",
+    "boto3-stubs-lite[bedrock-agent-runtime,sqs]>=1.37.31",
+    # Environment management
+    "python-dotenv>=1.1.0",
+    "hypothesis>=6.148.8",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+exclude = [
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "dist",
+]
+
+line-length = 120
+indent-width = 4
+
+[tool.ruff.lint]
+select = [
+    # pycodestyle
+    "E",
+    # Pyflakes
+    "F",
+    # pyupgrade
+    "UP",
+    # flake8-bugbear
+    "B",
+    # flake8-simplify
+    "SIM",
+    # isort
+    "I",
+]
+ignore = []
+
+fixable = ["ALL"]
+unfixable = []
+
+[tool.pytest.ini_options]
+markers = [
+    "integration: marks tests as integration tests",
+]
+testpaths = ["tests"]
+addopts = "-m 'not integration'"

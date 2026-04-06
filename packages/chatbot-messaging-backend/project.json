@@ -1,0 +1,89 @@
+{
+  "name": "chatbot-messaging-backend",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "packages/chatbot-messaging-backend/chatbot_messaging_backend",
+  "targets": {
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run pytest",
+        "cwd": "packages/chatbot-messaging-backend"
+      },
+      "configurations": {
+        "coverage": {
+          "command": "uv run pytest --cov=chatbot_messaging_backend --cov-report=term-missing --cov-report=html"
+        },
+        "integration": {
+          "command": "uv run pytest -m integration"
+        },
+        "unit": {
+          "command": "uv run pytest -m 'not integration'"
+        }
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run ruff check .",
+        "cwd": "packages/chatbot-messaging-backend"
+      },
+      "configurations": {
+        "fix": {
+          "command": "uv run ruff check --fix ."
+        }
+      }
+    },
+    "format": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run ruff format .",
+        "cwd": "packages/chatbot-messaging-backend"
+      }
+    },
+    "type-check": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run mypy chatbot_messaging_backend",
+        "cwd": "packages/chatbot-messaging-backend"
+      }
+    },
+    "install": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv sync",
+        "cwd": "packages/chatbot-messaging-backend"
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv build",
+        "cwd": "packages/chatbot-messaging-backend"
+      },
+      "outputs": ["{projectRoot}/dist"]
+    },
+    "package": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "rm -rf dist/lambda/chatbot-messaging-handler",
+          "mkdir -p dist/lambda/chatbot-messaging-handler",
+          "uv pip install --no-installer-metadata --compile-bytecode --target dist/lambda/chatbot-messaging-handler/lambda_package --python-platform aarch64-manylinux2014 --python-version 3.14 .",
+          "cd dist/lambda/chatbot-messaging-handler/lambda_package && zip -r ../lambda.zip ."
+        ],
+        "parallel": false,
+        "cwd": "packages/chatbot-messaging-backend"
+      },
+      "dependsOn": ["test"],
+      "inputs": [
+        "{projectRoot}/pyproject.toml",
+        "{projectRoot}/chatbot_messaging_backend/**/*"
+      ],
+      "outputs": [
+        "{projectRoot}/dist/lambda/chatbot-messaging-handler/lambda.zip"
+      ]
+    }
+  },
+  "tags": ["python", "lambda", "api", "backend", "messaging"]
+}

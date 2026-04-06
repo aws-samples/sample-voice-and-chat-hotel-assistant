@@ -1,0 +1,75 @@
+{
+  "name": "virtual-assistant-livekit",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "packages/virtual-assistant/virtual-assistant-livekit/virtual_assistant_livekit",
+  "targets": {
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run pytest",
+        "cwd": "packages/virtual-assistant/virtual-assistant-livekit"
+      },
+      "configurations": {
+        "coverage": {
+          "command": "uv run pytest --cov=virtual_assistant_livekit --cov-report=term-missing --cov-report=html"
+        },
+        "integration": {
+          "command": "uv run pytest -m integration"
+        },
+        "unit": {
+          "command": "uv run pytest -m 'not integration'"
+        }
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run ruff check .",
+        "cwd": "packages/virtual-assistant/virtual-assistant-livekit"
+      },
+      "configurations": {
+        "fix": {
+          "command": "uv run ruff check --fix ."
+        }
+      }
+    },
+    "format": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run ruff format .",
+        "cwd": "packages/virtual-assistant/virtual-assistant-livekit"
+      }
+    },
+    "type-check": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run mypy virtual_assistant_livekit",
+        "cwd": "packages/virtual-assistant/virtual-assistant-livekit"
+      }
+    },
+    "install": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv sync",
+        "cwd": "packages/virtual-assistant/virtual-assistant-livekit"
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv build",
+        "cwd": "packages/virtual-assistant/virtual-assistant-livekit"
+      },
+      "outputs": ["{projectRoot}/dist"]
+    },
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run python virtual_assistant_livekit/agent.py connect --room virtual-assistant",
+        "cwd": "packages/virtual-assistant/virtual-assistant-livekit"
+      }
+    }
+  },
+  "tags": ["python", "application", "livekit", "voice"]
+}

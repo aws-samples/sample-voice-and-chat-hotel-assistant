@@ -1,0 +1,107 @@
+{
+  "name": "@virtual-assistant/demo",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/demo/src",
+  "projectType": "application",
+  "tags": [],
+  "targets": {
+    "build": {
+      "dependsOn": ["lint", "compile", "bundle", "test"]
+    },
+    "bundle": {
+      "executor": "@nx/vite:build",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "dist/packages/demo/bundle"
+      },
+      "configurations": {
+        "development": {
+          "mode": "development"
+        },
+        "production": {
+          "mode": "production"
+        }
+      }
+    },
+    "compile": {
+      "executor": "nx:run-commands",
+      "outputs": ["{projectRoot}/dist"],
+      "options": {
+        "command": "tsc --build tsconfig.app.json",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "eslint src",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "lint:fix": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "eslint src --fix",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "load:runtime-config": {
+      "executor": "nx:run-commands",
+      "metadata": {
+        "description": "Load runtime config from your deployed ChatbotMessagingStack for Virtual Assistant development. You must set the AWS_REGION env variable whilst calling i.e: AWS_REGION=us-east-1 pnpm exec nx run @virtual-assistant/demo:load:runtime-config"
+      },
+      "options": {
+        "command": "aws s3 cp s3://`aws cloudformation describe-stacks --query \"Stacks[?StackName=='ChatbotMessagingStack'][].Outputs[?OutputKey=='ConfigBucketName'].OutputValue\" --output text`/runtime-config.json ./packages/demo/public/runtime-config.json"
+      }
+    },
+    "preview": {
+      "dependsOn": ["build"],
+      "executor": "@nx/vite:preview-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "@virtual-assistant/demo:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "@virtual-assistant/demo:build:development"
+        },
+        "production": {
+          "buildTarget": "@virtual-assistant/demo:build:production"
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nx/vite:dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "@virtual-assistant/demo:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "@virtual-assistant/demo:build:development",
+          "hmr": true
+        },
+        "production": {
+          "buildTarget": "@virtual-assistant/demo:build:production",
+          "hmr": false
+        }
+      }
+    },
+    "serve-static": {
+      "executor": "@nx/web:file-server",
+      "dependsOn": ["build"],
+      "options": {
+        "buildTarget": "@virtual-assistant/demo:build",
+        "spa": true
+      }
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": ["{options.reportsDirectory}"],
+      "options": {
+        "reportsDirectory": "../../coverage/packages/demo"
+      }
+    }
+  }
+}

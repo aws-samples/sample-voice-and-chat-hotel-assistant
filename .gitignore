@@ -1,0 +1,84 @@
+!jest.config.js
+# *.d.ts
+node_modules
+
+# CDK asset staging directory 
+.cdk.staging
+*cdk.out
+
+.vscode/
+
+.nx/cache
+.nx/workspace-data
+.cursor/rules/nx-rules.mdc
+.github/instructions/nx.instructions.md
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+.DS_Store
+
+mermaid-filter.err
+
+# Generated OpenAPI specs (generated from source files)
+packages/hotel-pms-simulation/openapi.yaml
+packages/hotel-pms-simulation/openapi.json
+
+# Evaluation results (generated per run)
+packages/virtual-assistant/eval/results/
+packages/virtual-assistant/strands-agents-evals-source/
+
+.protoshield/

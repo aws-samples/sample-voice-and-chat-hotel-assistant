@@ -1,0 +1,363 @@
+[
+  {
+    "name": "check_availability",
+    "description": "Check room availability for a hotel on specific dates. Use this to see what room types are available and their pricing before making a reservation.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "hotel_id": {
+          "type": "string",
+          "description": "Unique identifier for the hotel"
+        },
+        "check_in_date": {
+          "type": "string",
+          "description": "Check-in date in YYYY-MM-DD format"
+        },
+        "check_out_date": {
+          "type": "string",
+          "description": "Check-out date in YYYY-MM-DD format"
+        },
+        "guests": {
+          "type": "integer",
+          "description": "Number of guests"
+        },
+        "package_type": {
+          "type": "string",
+          "description": "Package type: 'simple' for basic pricing or 'detailed' for comprehensive breakdown",
+          "enum": ["simple", "detailed"]
+        }
+      },
+      "required": ["hotel_id", "check_in_date", "check_out_date", "guests"]
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "hotel_id": { "type": "string" },
+        "check_in_date": { "type": "string" },
+        "check_out_date": { "type": "string" },
+        "guests": { "type": "integer" },
+        "available_room_types": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "room_type_id": { "type": "string" },
+              "room_type_name": { "type": "string" },
+              "available_rooms": { "type": "integer" },
+              "base_rate": { "type": "number" },
+              "total_cost": { "type": "number" }
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "name": "generate_quote",
+    "description": "Generate a detailed pricing quote for a specific room type and dates. Use this after checking availability to get exact pricing details.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "hotel_id": {
+          "type": "string",
+          "description": "Unique identifier for the hotel"
+        },
+        "room_type_id": {
+          "type": "string",
+          "description": "Unique identifier for the room type"
+        },
+        "check_in_date": {
+          "type": "string",
+          "description": "Check-in date in YYYY-MM-DD format"
+        },
+        "check_out_date": {
+          "type": "string",
+          "description": "Check-out date in YYYY-MM-DD format"
+        },
+        "guests": {
+          "type": "integer",
+          "description": "Number of guests"
+        },
+        "package_type": {
+          "type": "string",
+          "description": "Package type: 'simple' for basic pricing or 'detailed' for comprehensive breakdown",
+          "enum": ["simple", "detailed"]
+        }
+      },
+      "required": [
+        "hotel_id",
+        "room_type_id",
+        "check_in_date",
+        "check_out_date",
+        "guests"
+      ]
+    }
+  },
+  {
+    "name": "create_reservation",
+    "description": "Create a new hotel reservation. Use this after checking availability and generating a quote to book a room.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "hotel_id": {
+          "type": "string",
+          "description": "Unique identifier for the hotel"
+        },
+        "room_type_id": {
+          "type": "string",
+          "description": "Unique identifier for the room type to reserve"
+        },
+        "guest_name": {
+          "type": "string",
+          "description": "Full name of the primary guest"
+        },
+        "guest_email": {
+          "type": "string",
+          "description": "Email address of the guest"
+        },
+        "guest_phone": {
+          "type": "string",
+          "description": "Phone number of the guest"
+        },
+        "check_in_date": {
+          "type": "string",
+          "description": "Check-in date in YYYY-MM-DD format"
+        },
+        "check_out_date": {
+          "type": "string",
+          "description": "Check-out date in YYYY-MM-DD format"
+        },
+        "guests": {
+          "type": "integer",
+          "description": "Number of guests"
+        },
+        "package_type": {
+          "type": "string",
+          "description": "Package type: 'simple' for basic pricing or 'detailed' for comprehensive breakdown",
+          "enum": ["simple", "detailed"]
+        }
+      },
+      "required": [
+        "hotel_id",
+        "room_type_id",
+        "guest_name",
+        "check_in_date",
+        "check_out_date",
+        "guests"
+      ]
+    }
+  },
+  {
+    "name": "get_reservations",
+    "description": "Retrieve reservations by hotel or guest email. Use this to look up existing bookings.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "hotel_id": {
+          "type": "string",
+          "description": "Unique identifier for the hotel (use this OR guest_email, not both)"
+        },
+        "guest_email": {
+          "type": "string",
+          "description": "Email address of the guest (use this OR hotel_id, not both)"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "Maximum number of reservations to return"
+        }
+      }
+    }
+  },
+  {
+    "name": "get_reservation",
+    "description": "Get details of a specific reservation by its ID. Use this to look up a particular booking.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "reservation_id": {
+          "type": "string",
+          "description": "Unique identifier for the reservation"
+        }
+      },
+      "required": ["reservation_id"]
+    }
+  },
+  {
+    "name": "update_reservation",
+    "description": "Update an existing reservation. Use this to modify guest details, dates, or reservation status.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "reservation_id": {
+          "type": "string",
+          "description": "Unique identifier for the reservation"
+        },
+        "guest_name": {
+          "type": "string",
+          "description": "Updated guest name"
+        },
+        "guest_email": {
+          "type": "string",
+          "description": "Updated guest email"
+        },
+        "guest_phone": {
+          "type": "string",
+          "description": "Updated guest phone"
+        },
+        "check_in_date": {
+          "type": "string",
+          "description": "Updated check-in date in YYYY-MM-DD format"
+        },
+        "check_out_date": {
+          "type": "string",
+          "description": "Updated check-out date in YYYY-MM-DD format"
+        },
+        "guests": {
+          "type": "integer",
+          "description": "Updated number of guests"
+        },
+        "package_type": {
+          "type": "string",
+          "description": "Updated package type",
+          "enum": ["simple", "detailed"]
+        },
+        "status": {
+          "type": "string",
+          "description": "Reservation status",
+          "enum": ["confirmed", "checked_in", "checked_out", "cancelled"]
+        },
+        "payment_status": {
+          "type": "string",
+          "description": "Payment status",
+          "enum": ["pending", "paid", "refunded"]
+        }
+      },
+      "required": ["reservation_id"]
+    }
+  },
+  {
+    "name": "checkout_guest",
+    "description": "Process guest checkout and final billing. Use this when a guest is leaving the hotel.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "reservation_id": {
+          "type": "string",
+          "description": "Unique identifier for the reservation"
+        },
+        "additional_charges": {
+          "type": "number",
+          "description": "Additional charges to add to the bill (e.g., room service, minibar)"
+        },
+        "payment_method": {
+          "type": "string",
+          "description": "Payment method for final billing",
+          "enum": ["card", "cash", "transfer"]
+        }
+      },
+      "required": ["reservation_id"]
+    }
+  },
+  {
+    "name": "create_housekeeping_request",
+    "description": "Create a housekeeping or maintenance request for a hotel room. Use this when guests need room service or report issues.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "hotel_id": {
+          "type": "string",
+          "description": "Unique identifier for the hotel"
+        },
+        "room_number": {
+          "type": "string",
+          "description": "Room number where service is needed"
+        },
+        "guest_name": {
+          "type": "string",
+          "description": "Name of the guest making the request"
+        },
+        "request_type": {
+          "type": "string",
+          "description": "Type of request",
+          "enum": ["cleaning", "maintenance", "amenities", "towels", "other"]
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed description of the request"
+        }
+      },
+      "required": ["hotel_id", "room_number", "guest_name", "request_type"]
+    }
+  },
+  {
+    "name": "get_hotels",
+    "description": "Get a list of all available hotels with their basic information. Use this to discover hotel options and get hotel IDs for other operations.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "limit": {
+          "type": "integer",
+          "description": "Maximum number of hotels to return (optional)"
+        }
+      }
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "hotels": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "hotel_id": { "type": "string" },
+              "name": { "type": "string" },
+              "location": { "type": "string" },
+              "timezone": { "type": "string" },
+              "created_at": { "type": "string" }
+            }
+          }
+        },
+        "total_count": { "type": "integer" }
+      }
+    }
+  },
+  {
+    "name": "query_hotel_knowledge",
+    "description": "Query the hotel knowledge base for information specific to a single hotel. Use this to get detailed information about rooms, amenities, policies, dining, and other hotel-specific details. Always specify a hotel_id to filter results to that specific property.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "The search query text to find relevant hotel information"
+        },
+        "hotel_id": {
+          "type": "string",
+          "description": "Unique identifier for the hotel to search within (e.g., 'H-PVR-002' for Paraíso Vallarta, 'H-PTL-003' for Paraíso Tulum, 'H-PLC-004' for Paraíso Los Cabos, 'H-GPR-001' for Grand Paraíso Resort & Spa)"
+        }
+      },
+      "required": ["query", "hotel_id"]
+    }
+  },
+  {
+    "name": "query_multi_hotel_knowledge",
+    "description": "Query the hotel knowledge base across multiple hotels or all hotels in the chain. Use this to compare information between hotels, find common amenities, or search across all properties when the guest hasn't specified a particular hotel. Optionally filter by specific hotel IDs.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "The search query text to find relevant hotel information across multiple properties"
+        },
+        "hotel_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Optional array of hotel IDs to filter results. If not provided or empty, searches across all hotels. Valid hotel IDs: 'H-PVR-002' (Paraíso Vallarta), 'H-PTL-003' (Paraíso Tulum), 'H-PLC-004' (Paraíso Los Cabos), 'H-GPR-001' (Grand Paraíso Resort & Spa)"
+        }
+      },
+      "required": ["query"]
+    }
+  }
+]

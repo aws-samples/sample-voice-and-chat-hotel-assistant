@@ -1,0 +1,75 @@
+{
+  "name": "virtual-assistant-chat",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "packages/virtual-assistant/virtual-assistant-chat/virtual_assistant_chat",
+  "targets": {
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run pytest",
+        "cwd": "packages/virtual-assistant/virtual-assistant-chat"
+      },
+      "configurations": {
+        "coverage": {
+          "command": "uv run pytest --cov=virtual_assistant_chat --cov-report=term-missing --cov-report=html"
+        },
+        "integration": {
+          "command": "uv run pytest -m integration"
+        },
+        "unit": {
+          "command": "uv run pytest -m 'not integration'"
+        }
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run ruff check .",
+        "cwd": "packages/virtual-assistant/virtual-assistant-chat"
+      },
+      "configurations": {
+        "fix": {
+          "command": "uv run ruff check --fix ."
+        }
+      }
+    },
+    "format": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run ruff format .",
+        "cwd": "packages/virtual-assistant/virtual-assistant-chat"
+      }
+    },
+    "type-check": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run mypy virtual_assistant_chat",
+        "cwd": "packages/virtual-assistant/virtual-assistant-chat"
+      }
+    },
+    "install": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv sync",
+        "cwd": "packages/virtual-assistant/virtual-assistant-chat"
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv build",
+        "cwd": "packages/virtual-assistant/virtual-assistant-chat"
+      },
+      "outputs": ["{projectRoot}/dist"]
+    },
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run python agent.py",
+        "cwd": "packages/virtual-assistant/virtual-assistant-chat"
+      }
+    }
+  },
+  "tags": ["python", "application", "chat", "agentcore"]
+}
