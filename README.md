@@ -277,8 +277,8 @@ uv run scripts/bedrock_subscribe.py "Anthropic Claude 3.5 Haiku"
 
 The prototype requires these models:
 
-- Amazon Nova Sonic (enabled by default)
-- Anthropic Claude 3.5 Haiku (requires subscription)
+- Amazon Nova 2 Sonic (enabled by default)
+- Amazon Nova 2 Lite (enabled by default)
 - Amazon Titan Text Embeddings V2 (enabled by default)
 
 ### Configure LiveKit Project Secret
