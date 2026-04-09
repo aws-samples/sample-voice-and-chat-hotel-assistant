@@ -232,7 +232,7 @@ async def entrypoint(ctx: JobContext):
     # Create AgentSession with Nova Sonic 2 model
     session = AgentSession(
         llm=RealtimeModel.with_nova_sonic_2(
-            voice="lupe",
+            voice="tiffany",
             temperature=model_temperature,
             turn_detection=endpointing_sensitivity,
             tool_choice="auto",
