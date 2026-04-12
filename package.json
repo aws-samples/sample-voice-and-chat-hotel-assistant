@@ -47,7 +47,7 @@
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "@vitejs/plugin-react": "^4.3.4",
-    "axios": "^1.13.5",
+    "axios": "^1.15.0",
     "eslint": "^9.0.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "typescript-eslint": "^8.57.1",
