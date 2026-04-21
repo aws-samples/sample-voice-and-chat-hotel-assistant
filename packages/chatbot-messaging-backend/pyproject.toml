@@ -35,7 +35,7 @@ dev = [
     "requests>=2.33.0",
 
     # Environment management
-    "python-dotenv>=1.1.0",
+    "python-dotenv>=1.2.2",
 ]
 
 [build-system]
