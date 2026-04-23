@@ -31,7 +31,7 @@ const initialMessage: Message = {
 };
 
 export function Chatbot() {
-  const [modelId, setModelId] = useState('us.anthropic.claude-3-5-haiku-20241022-v1:0');
+  const [modelId, setModelId] = useState('global.amazon.nova-2-lite-v1:0');
   const [temperature, setTemperature] = useState('0.2');
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
   const chatInputRef = useRef<ChatInputRef>(null);
