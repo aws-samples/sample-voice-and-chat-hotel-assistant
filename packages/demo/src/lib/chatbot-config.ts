@@ -24,7 +24,7 @@ export const useChatbotConfig = (): ChatbotConfig => {
   return {
     awsRegion: runtimeConfig.cognitoProps.region,
     messagingApiEndpoint: runtimeConfig.messagingApiEndpoint,
-    hotelAssistantClientId: runtimeConfig.hotelAssistantClientId,
+    virtualAssistantClientId: runtimeConfig.virtualAssistantClientId,
   };
 };
 

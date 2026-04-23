@@ -11,7 +11,7 @@ export interface RuntimeConfig {
     region: string;
   };
   messagingApiEndpoint: string;
-  hotelAssistantClientId: string;
+  virtualAssistantClientId: string;
   applicationName: string;
   logo?: string;
 }
@@ -82,7 +82,7 @@ export interface ConversationIdResponse {
 export interface ChatbotConfig {
   awsRegion: string;
   messagingApiEndpoint: string;
-  hotelAssistantClientId: string;
+  virtualAssistantClientId: string;
 }
 
 // UI Context Types

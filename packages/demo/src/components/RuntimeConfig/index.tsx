@@ -44,7 +44,7 @@ const RuntimeConfigProvider: React.FC<PropsWithChildren> = ({ children }) => {
             region: import.meta.env.VITE_AWS_REGION,
           },
           messagingApiEndpoint: import.meta.env.VITE_MESSAGING_API_ENDPOINT,
-          hotelAssistantClientId: import.meta.env.VITE_HOTEL_ASSISTANT_CLIENT_ID,
+          virtualAssistantClientId: import.meta.env.VITE_HOTEL_ASSISTANT_CLIENT_ID,
           applicationName: import.meta.env.VITE_APP_NAME || 'Hotel Assistant',
           logo: import.meta.env.VITE_APP_LOGO_URL,
         };
@@ -55,7 +55,7 @@ const RuntimeConfigProvider: React.FC<PropsWithChildren> = ({ children }) => {
           !envConfig.cognitoProps.userPoolWebClientId ||
           !envConfig.cognitoProps.region ||
           !envConfig.messagingApiEndpoint ||
-          !envConfig.hotelAssistantClientId
+          !envConfig.virtualAssistantClientId
         ) {
           const errorMessage =
             'Missing required configuration. Please check runtime-config.json or environment variables.';

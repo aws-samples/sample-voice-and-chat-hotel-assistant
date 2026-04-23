@@ -18,7 +18,7 @@ describe('useRuntimeConfig', () => {
         region: 'us-east-1',
       },
       messagingApiEndpoint: 'https://api.test.com',
-      hotelAssistantClientId: 'test-id',
+      virtualAssistantClientId: 'test-id',
       applicationName: 'Test Hotel Assistant',
       logo: 'test-logo.png',
     };
@@ -33,7 +33,7 @@ describe('useRuntimeConfig', () => {
     expect(result.current.applicationName).toBe('Test Hotel Assistant');
     expect(result.current.cognitoProps.userPoolId).toBe('us-east-1_test123');
     expect(result.current.messagingApiEndpoint).toBe('https://api.test.com');
-    expect(result.current.hotelAssistantClientId).toBe('test-id');
+    expect(result.current.virtualAssistantClientId).toBe('test-id');
   });
 
   it('should throw error when used outside of RuntimeConfigProvider', () => {

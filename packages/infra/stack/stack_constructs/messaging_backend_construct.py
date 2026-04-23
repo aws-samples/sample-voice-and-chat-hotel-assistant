@@ -463,11 +463,12 @@ class MessagingBackendConstruct(Construct):
         ### COGNITO USER POOL ###
         #######################
 
-        # Create Cognito User Pool for authentication (without custom scopes initially)
+        # Create Cognito User Pool for authentication
+        # Pass through the oauth_scopes from the caller (includes chatbot-messaging/write)
         self.cognito = CognitoConstruct(
             self,
             "ChatbotMessagingUserPool",
-            oauth_scopes=["aws.cognito.signin.user.admin"],  # Use standard scope initially
+            oauth_scopes=oauth_scopes,
             callback_urls=callback_urls,
             logout_urls=callback_urls,
         )
@@ -518,6 +519,10 @@ class MessagingBackendConstruct(Construct):
             identifier="chatbot-messaging",
             scopes=[write_scope],
         )
+
+        # Ensure the user pool client (created in CognitoConstruct) depends on the resource server
+        # so the custom scope "chatbot-messaging/write" is valid when the client is created
+        self.cognito.user_pool_client.node.add_dependency(self.user_pool_resource_server)
 
         # Create machine-to-machine client for server-to-server communication
         self.machine_client = self.user_pool.add_client(

@@ -83,9 +83,9 @@ class CognitoConstruct(Construct):
                 elif scope == "phone":
                     scopes.append(cognito.OAuthScope.PHONE)
                 else:
-                    # For custom scopes, they need to be defined as resource server scopes first
-                    # This will be handled separately in the messaging backend construct
-                    pass
+                    # For custom scopes (e.g., "chatbot-messaging/write"), use OAuthScope.custom()
+                    # The resource server must be added to the user pool separately
+                    scopes.append(cognito.OAuthScope.custom(scope))
 
             # Add default scopes
             scopes.extend([cognito.OAuthScope.OPENID, cognito.OAuthScope.PROFILE])

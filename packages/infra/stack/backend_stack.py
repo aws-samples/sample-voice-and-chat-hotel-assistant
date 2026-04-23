@@ -120,6 +120,26 @@ class BackendStack(Stack):
         # Add messaging client secret ARN if provided
         if messaging_client_secret:
             environment_variables["MESSAGING_CLIENT_SECRET_ARN"] = messaging_client_secret.secret_arn
+
+        # Pre-create MessagingBackendConstruct if needed (before runtime creation)
+        # so we can pass its values into the runtime environment variables
+        eum_social_topic_arn = self.node.try_get_context("eumSocialTopicArn")
+        eum_social_phone_id = self.node.try_get_context("eumSocialPhoneNumberId")
+        _messaging_backend = None
+        if not (eum_social_topic_arn and eum_social_phone_id) and messaging_topic is None and messaging_client_secret is None:
+            _messaging_backend = MessagingBackendConstruct(
+                self,
+                "MessagingBackend",
+                callback_urls=[
+                    "http://localhost:5173",  # Vite dev server
+                    "http://localhost:3000",  # Alternative dev server
+                    "http://localhost:4200",  # NX serve frontend
+                    "http://localhost:4173",  # Vite preview server
+                ],
+                oauth_scopes=["aws.cognito.signin.user.admin", "chatbot-messaging/write"],
+            )
+            environment_variables["MESSAGING_API_ENDPOINT"] = _messaging_backend.api.url
+            environment_variables["MESSAGING_CLIENT_SECRET_ARN"] = _messaging_backend.machine_client_secret.secret_arn
         # Add cross-account Bedrock role if provided in context
         bedrock_xacct_role = self.node.try_get_context("bedrock_xacct_role")
         bedrock_xacct_region = self.node.try_get_context("bedrock_xacct_region")
@@ -175,6 +195,19 @@ class BackendStack(Stack):
                     effect=iam.Effect.ALLOW,
                     actions=["sts:AssumeRole"],
                     resources=[bedrock_xacct_role],
+                )
+            )
+        else:
+            # Grant direct Bedrock model invocation when not using cross-account role
+            agentcore_runtime.add_to_role_policy(
+                iam.PolicyStatement(
+                    sid="BedrockModelInvocation",
+                    effect=iam.Effect.ALLOW,
+                    actions=[
+                        "bedrock:InvokeModel",
+                        "bedrock:InvokeModelWithResponseStream",
+                    ],
+                    resources=["*"],
                 )
             )
 
@@ -314,17 +347,28 @@ class BackendStack(Stack):
                 whatsapp_allow_list_parameter=whatsapp_allow_list_parameter,
             )
         elif messaging_topic is None and messaging_client_secret is None:
-            # Deploy MessagingBackendConstruct when EUM Social is not available
-            messaging_backend = MessagingBackendConstruct(
-                self,
-                "MessagingBackend",
-                callback_urls=[
-                    "http://localhost:5173",  # Vite dev server
-                    "http://localhost:3000",  # Alternative dev server
-                    "http://localhost:4200",  # NX serve frontend
-                    "http://localhost:4173",  # Vite preview server
-                ],
-                oauth_scopes=["chatbot-messaging/write"],
+            # Use pre-created MessagingBackendConstruct
+            messaging_backend = _messaging_backend
+
+            # Grant AgentCore Runtime access to messaging backend resources
+            agentcore_runtime.add_to_role_policy(
+                iam.PolicyStatement(
+                    sid="SimulatedMessagingClientSecretAccess",
+                    effect=iam.Effect.ALLOW,
+                    actions=["secretsmanager:GetSecretValue"],
+                    resources=[messaging_backend.machine_client_secret.secret_arn],
+                )
+            )
+            agentcore_runtime.add_to_role_policy(
+                iam.PolicyStatement(
+                    sid="SimulatedMessagingAPIAccess",
+                    effect=iam.Effect.ALLOW,
+                    actions=["execute-api:Invoke"],
+                    resources=[
+                        f"arn:aws:execute-api:{self.region}:{self.account}:*/*/POST/messages",
+                        f"arn:aws:execute-api:{self.region}:{self.account}:*/*/PUT/messages/*/status",
+                    ],
+                )
             )
 
             # Use messaging backend construct outputs for integration
