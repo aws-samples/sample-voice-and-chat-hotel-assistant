@@ -59,26 +59,11 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
       // Amazon Nova Models
       { label: 'Amazon Nova Lite', value: 'us.amazon.nova-lite-v1:0' },
       { label: 'Amazon Nova Micro', value: 'us.amazon.nova-micro-v1:0' },
-      { label: 'Amazon Nova Pro', value: 'us.amazon.nova-pro-v1:0' },
-      { label: 'Amazon Nova Premier', value: 'us.amazon.nova-premier-v1:0' },
+      { label: 'Amazon Nova 2 Lite', value: 'global.amazon.nova-2-lite-v1:0' },
 
       // Anthropic Claude Models (v3+)
-      { label: 'Claude 3 Haiku', value: 'us.anthropic.claude-3-haiku-20240307-v1:0' },
-      { label: 'Claude 3 Sonnet', value: 'us.anthropic.claude-3-sonnet-20240229-v1:0' },
-      { label: 'Claude 3.5 Haiku', value: 'us.anthropic.claude-3-5-haiku-20241022-v1:0' },
-      {
-        label: 'Claude 3.5 Sonnet',
-        value: 'us.anthropic.claude-3-5-sonnet-20240620-v1:0',
-      },
-      {
-        label: 'Claude 3.5 Sonnet v2',
-        value: 'us.anthropic.claude-3-5-sonnet-20241022-v2:0',
-      },
-      {
-        label: 'Claude 3.7 Sonnet',
-        value: 'us.anthropic.claude-3-7-sonnet-20250219-v1:0',
-      },
-      { label: 'Claude 4 Sonnet', value: 'us.anthropic.claude-sonnet-4-20250514-v1:0' },
+      { label: 'Claude 4.5 Haiku', value: 'us.anthropic.claude-haiku-4-5-20251001-v1:0' },
+      { label: 'Claude 4.6 Sonnet', value: 'global.anthropic.claude-sonnet-4-6' },
     ];
 
     const selectedModelOption = modelOptions.find(option => option.value === modelId) || null;
