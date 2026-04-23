@@ -57,15 +57,24 @@ class SendMessageRequest(BaseModel):
     @field_validator("conversation_id")
     @classmethod
     def validate_conversation_id(cls, v: str | None) -> str | None:
-        """Validate conversation ID is a valid UUID if provided."""
+        """Validate conversation ID is a valid UUID or legacy senderId#recipientId format."""
         if v is None:
             return v
 
+        # Accept UUID format
         try:
             uuid.UUID(v)
             return v
-        except ValueError as e:
-            raise ValueError("conversationId must be a valid UUID") from e
+        except ValueError:
+            pass
+
+        # Accept legacy senderId#recipientId format
+        if "#" in v:
+            parts = v.split("#")
+            if len(parts) == 2 and parts[0].strip() and parts[1].strip():
+                return v
+
+        raise ValueError("conversationId must be a valid UUID or in format 'senderId#recipientId'")
 
 
 class UpdateMessageStatusRequest(BaseModel):

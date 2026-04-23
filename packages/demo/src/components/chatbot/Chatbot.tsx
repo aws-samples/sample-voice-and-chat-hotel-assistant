@@ -38,7 +38,7 @@ export function Chatbot() {
 
   // Get configuration using the hook
   const config = useChatbotConfig();
-  const hotelAssistantClientId = config.hotelAssistantClientId || 'hotel-assistant';
+  const virtualAssistantClientId = config.virtualAssistantClientId || 'hotel-assistant';
   const apiEndpoint = config.messagingApiEndpoint;
 
   // Flash notification system
@@ -50,7 +50,7 @@ export function Chatbot() {
   // Generate conversation ID using current user and hotel assistant (fallback)
   const { data: fallbackConversationId, isLoading: isConversationIdLoading } = useConversationId(
     apiEndpoint,
-    hotelAssistantClientId
+    virtualAssistantClientId
   );
 
   // Use current conversation ID or fallback to generated one
@@ -102,7 +102,7 @@ export function Chatbot() {
 
     try {
       const response = await sendMessageMutation.mutateAsync({
-        recipientId: hotelAssistantClientId,
+        recipientId: virtualAssistantClientId,
         content: messageText,
         modelId,
         temperature,

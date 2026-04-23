@@ -17,7 +17,7 @@ import {
   TopNavigation,
 } from '@cloudscape-design/components';
 import CloudscapeAppLayout, { AppLayoutProps } from '@cloudscape-design/components/app-layout';
-import { matchByPath, useLocation, useNavigate, Outlet } from '@tanstack/react-router';
+import { useLocation, useNavigate, Outlet } from '@tanstack/react-router';
 import { useGlobalUIContext } from '../../hooks/useGlobalUIContext';
 import helpPanelContent from '../../help/helpPanelContent';
 
@@ -25,7 +25,6 @@ const getBreadcrumbs = (
   pathName: string,
   search: string,
   defaultBreadcrumb: string,
-  availableRoutes?: string[]
 ) => {
   const segments = [defaultBreadcrumb, ...pathName.split('/').filter(segment => segment !== '')];
 
@@ -38,10 +37,8 @@ const getBreadcrumbs = (
             .join('/')
             .replace('//', '/')}`;
 
-    const matched = !availableRoutes || availableRoutes.find(r => matchByPath(r, href, {}));
-
     return {
-      href: matched ? `${href}${search}` : '#',
+      href: `${href}${search}`,
       text: segment,
     };
   });

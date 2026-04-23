@@ -90,14 +90,14 @@ class WebMessaging(MessagingPlatform):
         """Send response via messaging API.
 
         Args:
-            conversation_id: Conversation to send message to
+            conversation_id: Conversation to send message to (may be senderId#recipientId format)
             content: Message content to send
 
         Returns:
             MessageResponse with message details or error
         """
         try:
-            # Extract recipient from conversation ID (format: userId#hotel-assistant)
+            # Extract recipient from conversation ID (format: userId#hotel-assistant or userId#clientId)
             if "#" in conversation_id:
                 parts = conversation_id.split("#")
                 # Find the non-assistant part as recipient
@@ -106,7 +106,9 @@ class WebMessaging(MessagingPlatform):
                 # Fallback - use conversation_id as recipient
                 recipient_id = conversation_id
 
-            result = await self.messaging_client.send_message(recipient_id=recipient_id, content=content)
+            result = await self.messaging_client.send_message(
+                recipient_id=recipient_id, content=content, conversation_id=conversation_id
+            )
             return MessageResponse(success=True, message_id=result.get("messageId"), data=result)
         except Exception as e:
             logger.error(f"Failed to send response to conversation {conversation_id}: {e}")

@@ -19,7 +19,7 @@ const mockRuntimeConfig: RuntimeConfig = {
     region: 'us-east-1',
   },
   messagingApiEndpoint: 'https://api.test.com',
-  hotelAssistantClientId: 'test-assistant-id',
+  virtualAssistantClientId: 'test-assistant-id',
   applicationName: 'Hotel Assistant Test',
 };
 

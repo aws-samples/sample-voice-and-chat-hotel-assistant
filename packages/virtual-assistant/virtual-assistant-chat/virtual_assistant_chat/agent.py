@@ -98,7 +98,7 @@ def create_session_manager(session_id: str, actor_id: str):
     """Create SessionManager for specific session/actor combination.
 
     Args:
-        session_id: Unique session identifier
+        session_id: Unique session identifier (may contain # from conversationId format)
         actor_id: Unique actor identifier
 
     Returns:
@@ -106,7 +106,12 @@ def create_session_manager(session_id: str, actor_id: str):
     """
     memory_id, aws_region = validate_configuration()
 
-    config = AgentCoreMemoryConfig(memory_id=memory_id, session_id=session_id, actor_id=actor_id)
+    # Sanitize session_id for AgentCore Memory compatibility
+    # Memory requires pattern [a-zA-Z0-9][a-zA-Z0-9-_/]* (no # allowed)
+    # Conversation IDs may use senderId#recipientId format
+    sanitized_session_id = session_id.replace("#", "-")
+
+    config = AgentCoreMemoryConfig(memory_id=memory_id, session_id=sanitized_session_id, actor_id=actor_id)
 
     return AgentCoreMemorySessionManager(agentcore_memory_config=config, region_name=aws_region)
 
