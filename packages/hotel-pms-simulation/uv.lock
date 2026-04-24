@@ -86,7 +86,7 @@ wheels = [
 
 [[package]]
 name = "aws-encryption-sdk"
-version = "4.0.3"
+version = "4.0.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "attrs" },
@@ -94,9 +94,9 @@ dependencies = [
     { name = "cryptography" },
     { name = "wrapt" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/cf/70/fa651eeb1e0e5b3a0d84c291dba2aef9e7c55bd613a54c103005b9ec1634/aws_encryption_sdk-4.0.3.tar.gz", hash = "sha256:f715ad55bec6bd215563cd5bb103b39fa59c504cbf90a024094c36ce0ec9de1c", size = 260396, upload-time = "2025-09-03T19:51:24.766Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/0f/c4/0a01ef4bc136c66031ed9c4852ea629451dc551c095bd7d9b20df72210a1/aws_encryption_sdk-4.0.4.tar.gz", hash = "sha256:60b69f19f72fa568d7e69e9d3966fe10e541c9c83b1af5a83724f8a1fe184d43", size = 260877, upload-time = "2026-02-26T20:30:58.688Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/15/22/f0f90eb4de2043803bc6c414833b730657643f62672a89f6619faa483064/aws_encryption_sdk-4.0.3-py2.py3-none-any.whl", hash = "sha256:2f56993bdc5963c656e5b417ed62d1da46ee7a3c438c3ea5dfca89f3f7a86e4b", size = 99131, upload-time = "2025-09-03T19:51:23.337Z" },
+    { url = "https://files.pythonhosted.org/packages/b7/e0/87faf7c2922166c9e612d4fa1bef8ff96167bb0c2ea6f6e07b4b65ac1ded/aws_encryption_sdk-4.0.4-py2.py3-none-any.whl", hash = "sha256:29e7ec00aa6f27bb6e4f4f17e51abf3fc58a7fc17882c0e375ee09c97ab84585", size = 99133, upload-time = "2026-02-26T20:30:57.436Z" },
 ]
 
 [[package]]
